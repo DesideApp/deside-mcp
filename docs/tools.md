@@ -17,7 +17,7 @@ Deside MCP exposes 6 tools. All require authentication.
 
 **Scope:** `dm:write`
 
-Send a DM to any Solana wallet. If no conversation exists, a contact request is created automatically.
+Send a DM to any Solana wallet. The conversation ID is derived automatically from the two wallet addresses. If no conversation exists, a contact request is created.
 
 ```json
 {
