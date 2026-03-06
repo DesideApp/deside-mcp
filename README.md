@@ -24,13 +24,6 @@ flowchart TD
     S -.-> I[Identity]
     S -.-> R[Reputation]
     S -.-> D[Discovery]
-
-    style W fill:#2d2d2d,color:#e0e0e0,stroke:#555
-    style S fill:#2d2d2d,color:#e0e0e0,stroke:#555
-    style M fill:#2f4f3f,color:#c8e6c9,stroke:#4a7c59
-    style I fill:#1e3a5f,color:#b0c4de,stroke:#3a6b8c
-    style R fill:#1e3a5f,color:#b0c4de,stroke:#3a6b8c
-    style D fill:#1e3a5f,color:#b0c4de,stroke:#3a6b8c
 ```
 
 **Solid line** = core (works with any wallet). **Dashed lines** = optional enrichment.
