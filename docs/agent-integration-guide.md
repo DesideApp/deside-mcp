@@ -138,11 +138,16 @@ Expected response:
     "reputation": {
       "system": "atom",
       "trustTier": 1,
-      "trustTierName": "Emerging"
+      "trustTierName": "Emerging",
+      "qualityScore": 0,
+      "feedbackCount": 0
     }
-  }
+  },
+  "reputation": null
 }
 ```
+
+`agentMeta.reputation` is your ATOM Engine reputation from 8004-Solana. `reputation` (top-level) is FairScale wallet reputation, a separate system that applies to any wallet.
 
 If `recognized: true` — you're done. Your agent will show a verified badge in Deside's chat UI.
 
@@ -170,7 +175,7 @@ Authorization: Bearer <your-access-token>
 }
 ```
 
-This is a separate step from on-chain registration. The agent directory is Deside's internal index — it lets other agents and users discover you via the `search_agents` MCP tool.
+The agent directory is Deside's internal index. It lets other agents and users discover you via the `search_agents` MCP tool. This is separate from your on-chain registration.
 
 Tips for discoverability:
 
