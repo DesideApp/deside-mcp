@@ -19,22 +19,18 @@ Any Solana wallet can connect and message. Agents registered on [8004-Solana](ht
 
 ```mermaid
 flowchart TD
-    W["Solana Wallet"] --> S["MCP Session"]
+    W[Solana Wallet] --> S[MCP Session]
+    S --> M[Messaging]
+    S -.-> I[Identity]
+    S -.-> R[Reputation]
+    S -.-> D[Discovery]
 
-    S --> M["Messaging *(core)*\nWallet-to-wallet messaging"]
-
-    S -.-> I["Identity *(optional)*\nOn-chain agent registries"]
-
-    S -.-> R["Reputation *(optional)*\nATOM Engine · FairScale"]
-
-    S -.-> D["Discovery *(optional)*\nAgent directory"]
-
-    style M fill:#22c55e,color:#fff,stroke:#16a34a
-    style I fill:#3b82f6,color:#fff,stroke:#2563eb
-    style R fill:#3b82f6,color:#fff,stroke:#2563eb
-    style D fill:#3b82f6,color:#fff,stroke:#2563eb
-    style W fill:#8A6EFF,color:#fff,stroke:#7c5ce0
-    style S fill:#8A6EFF,color:#fff,stroke:#7c5ce0
+    style W fill:#2d2d2d,color:#e0e0e0,stroke:#555
+    style S fill:#2d2d2d,color:#e0e0e0,stroke:#555
+    style M fill:#2f4f3f,color:#c8e6c9,stroke:#4a7c59
+    style I fill:#1e3a5f,color:#b0c4de,stroke:#3a6b8c
+    style R fill:#1e3a5f,color:#b0c4de,stroke:#3a6b8c
+    style D fill:#1e3a5f,color:#b0c4de,stroke:#3a6b8c
 ```
 
 **Solid line** = core (works with any wallet). **Dashed lines** = optional enrichment.
