@@ -1,6 +1,6 @@
 # Real-Time Notifications
 
-After authentication, the server automatically subscribes your wallet to real-time push events via the MCP notification channel.
+After successful authentication, the MCP session is automatically subscribed to real-time events for your wallet. No additional setup is needed.
 
 ---
 
@@ -24,8 +24,8 @@ Fired when a new DM arrives or a new contact request is received.
 
 | Field | Description |
 |---|---|
-| `convId` | Conversation ID (null for new contact requests) |
-| `sender` | Wallet address of the sender |
+| `convId` | Conversation ID. `null` for new contact requests (no conversation exists yet until the request is accepted) |
+| `sender` | Solana wallet address of the sender |
 | `preview` | First 100 characters of the message |
 | `seq` | Message sequence number (null for contact requests) |
 | `isNewConversation` | `true` if this is a new contact request |

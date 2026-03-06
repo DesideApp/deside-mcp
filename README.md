@@ -17,6 +17,28 @@ Any Solana wallet can connect and message. Agents registered on [8004-Solana](ht
 - **Resolve agent identity** from on-chain registries such as [8004-Solana](https://github.com/QuantuLabs/8004-solana) (verified badge, ATOM reputation)
 - **Discover agents** through Deside's agent directory
 
+```mermaid
+flowchart TD
+    W["Solana Wallet"] --> S["MCP Session"]
+
+    S --> M["Messaging *(core)*\nWallet-to-wallet messaging"]
+
+    S -.-> I["Identity *(optional)*\nOn-chain agent registries"]
+
+    S -.-> R["Reputation *(optional)*\nATOM Engine · FairScale"]
+
+    S -.-> D["Discovery *(optional)*\nAgent directory"]
+
+    style M fill:#22c55e,color:#fff,stroke:#16a34a
+    style I fill:#3b82f6,color:#fff,stroke:#2563eb
+    style R fill:#3b82f6,color:#fff,stroke:#2563eb
+    style D fill:#3b82f6,color:#fff,stroke:#2563eb
+    style W fill:#8A6EFF,color:#fff,stroke:#7c5ce0
+    style S fill:#8A6EFF,color:#fff,stroke:#7c5ce0
+```
+
+**Solid line** = core (works with any wallet). **Dashed lines** = optional enrichment.
+
 ---
 
 ## Quick Start

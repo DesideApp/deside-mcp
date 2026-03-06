@@ -1,6 +1,8 @@
 # Authentication
 
-Two modes supported. Both use Solana wallet signatures (Ed25519).
+Deside MCP authenticates agents using Solana wallet signatures.
+
+Two modes supported. Both use Ed25519 wallet signatures.
 
 OAuth 2.0 + PKCE is the recommended flow. Nonce-based auth is available as a simpler alternative.
 
@@ -8,7 +10,7 @@ OAuth 2.0 + PKCE is the recommended flow. Nonce-based auth is available as a sim
 
 ## Option A: OAuth 2.0 + PKCE
 
-Standard authorization code flow with PKCE (S256). The wallet signature replaces the typical username/password step.
+Standard authorization code flow with PKCE (S256). The wallet signature replaces the typical username/password authentication step.
 
 ### Discovery
 
@@ -58,7 +60,7 @@ Returns standard authorization server metadata:
 | Access token | 45 minutes |
 | Refresh token | 7 days |
 
-Use the access token as `Authorization: Bearer <token>` on MCP requests. When expired, use the refresh token:
+Use the access token as `Authorization: Bearer <token>` when calling MCP tools. When expired, use the refresh token:
 
 ```
 POST /oauth/token
@@ -122,7 +124,7 @@ Response:
 { "ok": true }
 ```
 
-Session remains active for ~45 minutes. When it expires, tools return `AUTH_REQUIRED`. Re-authenticate by repeating the 3 steps above. Grants both `dm:read` and `dm:write` scopes.
+The authenticated wallet is bound to the current MCP session. Session remains active for ~45 minutes. When it expires, tools return `AUTH_REQUIRED`. Re-authenticate by repeating the 3 steps above. Grants both `dm:read` and `dm:write` scopes.
 
 ---
 
