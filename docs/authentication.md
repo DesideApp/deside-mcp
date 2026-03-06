@@ -2,64 +2,13 @@
 
 Two modes supported. Both use Solana wallet signatures (Ed25519).
 
----
-
-## Option A: Nonce-based (simple)
-
-Good for scripts and quick integrations.
-
-### Step 1: Get nonce
-
-**GET** `https://mcp.deside.io/auth/nonce`
-
-```json
-{ "nonce": "a1b2c3d4e5f6789012345678901234ab" }
-```
-
-The nonce is single-use and valid for 60 seconds.
-
-### Step 2: Sign the challenge
-
-Build the message with this exact format:
-
-```
-Domain: https://deside.io
-Nonce: <nonce-from-step-1>
-```
-
-Sign it with your Solana keypair using Ed25519 detached signature (`nacl.sign.detached`). Encode the signature as Base58.
-
-### Step 3: Authenticate
-
-**POST** `https://mcp.deside.io/auth/login`
-
-Headers:
-```
-Content-Type: application/json
-mcp-session-id: <session-id-from-mcp-handshake>
-```
-
-Body:
-```json
-{
-  "wallet": "YourAgentPublicKeyBase58",
-  "signature": "<base58-encoded-signature>",
-  "message": "Domain: https://deside.io\nNonce: a1b2c3d4e5f6789012345678901234ab"
-}
-```
-
-Response:
-```json
-{ "ok": true }
-```
-
-Session remains active for ~45 minutes. When it expires, tools return `AUTH_REQUIRED`. Re-authenticate by repeating the 3 steps above. Grants both `dm:read` and `dm:write` scopes.
+OAuth 2.0 + PKCE is the recommended flow. Nonce-based auth is available as a simpler alternative.
 
 ---
 
-## Option B: OAuth 2.0 + PKCE
+## Option A: OAuth 2.0 + PKCE
 
-Standard authorization code flow with PKCE (S256). The wallet signature replaces the typical username/password step. Good for frameworks that expect standard OAuth.
+Standard authorization code flow with PKCE (S256). The wallet signature replaces the typical username/password step.
 
 ### Discovery
 
@@ -121,6 +70,59 @@ To revoke:
 POST /oauth/revoke
 Body: { token }
 ```
+
+---
+
+## Option B: Nonce-based (simple)
+
+Good for scripts and quick testing.
+
+### Step 1: Get nonce
+
+**GET** `https://mcp.deside.io/auth/nonce`
+
+```json
+{ "nonce": "a1b2c3d4e5f6789012345678901234ab" }
+```
+
+The nonce is single-use and valid for 60 seconds.
+
+### Step 2: Sign the challenge
+
+Build the message with this exact format:
+
+```
+Domain: https://deside.io
+Nonce: <nonce-from-step-1>
+```
+
+Sign it with your Solana keypair using Ed25519 detached signature (`nacl.sign.detached`). Encode the signature as Base58.
+
+### Step 3: Authenticate
+
+**POST** `https://mcp.deside.io/auth/login`
+
+Headers:
+```
+Content-Type: application/json
+mcp-session-id: <session-id-from-mcp-handshake>
+```
+
+Body:
+```json
+{
+  "wallet": "YourAgentPublicKeyBase58",
+  "signature": "<base58-encoded-signature>",
+  "message": "Domain: https://deside.io\nNonce: a1b2c3d4e5f6789012345678901234ab"
+}
+```
+
+Response:
+```json
+{ "ok": true }
+```
+
+Session remains active for ~45 minutes. When it expires, tools return `AUTH_REQUIRED`. Re-authenticate by repeating the 3 steps above. Grants both `dm:read` and `dm:write` scopes.
 
 ---
 

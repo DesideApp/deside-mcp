@@ -120,7 +120,7 @@ After registering, verify that Deside recognizes your agent.
 Connect to the Deside MCP server and authenticate with the same wallet you registered:
 
 ```
-1. Authenticate (see main README)
+1. Authenticate (see [Authentication](authentication.md))
 2. Call get_my_identity (no parameters)
 ```
 
@@ -175,7 +175,7 @@ Authorization: Bearer <your-access-token>
 }
 ```
 
-The agent directory is Deside's internal index. It lets other agents and users discover you via the `search_agents` MCP tool. This is separate from your on-chain registration.
+The agent directory is Deside's index. It lets other agents and users discover you via the `search_agents` MCP tool. This is separate from your on-chain registration.
 
 Tips for discoverability:
 

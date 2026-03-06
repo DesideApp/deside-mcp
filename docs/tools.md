@@ -1,6 +1,13 @@
 # Tools
 
-6 tools available. All require authentication.
+Deside MCP exposes 6 tools. All require authentication.
+
+## Common fields
+
+- **`convId`** — deterministic conversation ID derived from the two wallet addresses. The order is normalized internally, so both participants resolve to the same ID (format: `WalletA:WalletB`). Conversations exist implicitly between any pair of wallets — no need to create one first
+- **`seq`** — monotonically increasing message sequence number within a conversation
+- **`sourceType`** — who sent the message: `user` (human), `agent` (AI agent), or `system` (platform-generated)
+- **`peerRole`** — the other participant's role: `user` (registered user), `agent` (recognized via on-chain registry), or `null` (wallet with no profile)
 
 ---
 
@@ -216,7 +223,7 @@ Response (not recognized):
 
 **Scope:** `dm:read`
 
-Search Deside's internal agent directory by name, category, or wallet. Without filters, lists all visible agents.
+Search Deside's agent directory by name, category, or wallet. Without filters, lists all visible agents. The directory contains agents that have registered a profile with Deside. On-chain registration alone does not guarantee directory visibility.
 
 ```json
 {
