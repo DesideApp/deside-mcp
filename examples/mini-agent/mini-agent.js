@@ -5,13 +5,9 @@ import { randomUUID } from 'node:crypto';
 const ENV = {
   mcpBaseUrl: (process.env.MCP_BASE_URL || 'http://localhost:3100').replace(/\/+$/, ''),
   mcpPath: process.env.MCP_PATH || '/mcp',
-  authMode: (process.env.AUTH_MODE || 'legacy').toLowerCase(),
-  authLoginPath: process.env.AUTH_LOGIN_PATH || '/auth/login',
-  authDomain: process.env.AUTH_DOMAIN || null,
   toWallet: process.env.TO_WALLET || null,
   text: process.env.TEXT || `Hello from deside mini-agent @ ${new Date().toISOString()}`,
   listLimit: Number.parseInt(process.env.LIST_LIMIT || '20', 10),
-  readLimit: Number.parseInt(process.env.READ_LIMIT || '20', 10),
   watchPush: process.env.WATCH_PUSH === '1',
   pushTimeoutMs: Number.parseInt(process.env.PUSH_TIMEOUT_MS || '15000', 10),
   oauthScope: process.env.OAUTH_SCOPE || 'dm:read dm:write',
@@ -148,28 +144,6 @@ function buildPkceChallenge(verifier) {
     .digest('SHA-256', new TextEncoder().encode(verifier))
     .then((hash) => Buffer.from(hash).toString('base64'))
     .then((base64) => base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, ''));
-}
-
-async function authLegacy({ sessionId, agent }) {
-  const nonceRes = await httpJson(`${ENV.mcpBaseUrl}/auth/nonce`);
-  assert(nonceRes.status === 200, 'auth_nonce_failed', nonceRes.data);
-  const nonce = nonceRes.data?.nonce;
-  assert(typeof nonce === 'string' && nonce.length > 0, 'auth_nonce_missing', nonceRes.data);
-  const domain = nonceRes.data?.domain || ENV.authDomain || ENV.mcpBaseUrl;
-  const message = `Domain: ${domain}\nNonce: ${nonce}`;
-  const signature = signMessage(message, agent.keypair);
-
-  const loginRes = await httpJson(`${ENV.mcpBaseUrl}${ENV.authLoginPath}`, {
-    method: 'POST',
-    headers: { 'mcp-session-id': sessionId },
-    body: {
-      wallet: agent.wallet,
-      signature,
-      message,
-    },
-  });
-  assert(loginRes.status === 200, 'legacy_login_failed', loginRes.data);
-  return { mode: 'legacy', accessToken: null, refreshToken: null };
 }
 
 async function authOAuth({ agent }) {
@@ -322,25 +296,34 @@ async function waitForPushNotification({ sessionId, bearerToken, timeoutMs }) {
 async function main() {
   const agent = createAgent();
   console.log(`[mini-agent] wallet=${agent.wallet} ephemeral=${agent.ephemeral}`);
-  console.log(`[mini-agent] mcp=${ENV.mcpBaseUrl}${ENV.mcpPath} authMode=${ENV.authMode}`);
+  console.log(`[mini-agent] mcp=${ENV.mcpBaseUrl}${ENV.mcpPath} auth=oauth_pkce`);
 
   const sessionId = await initializeSession();
-  let authResult = null;
-  if (ENV.authMode === 'oauth') {
-    authResult = await authOAuth({ agent });
-  } else {
-    authResult = await authLegacy({ sessionId, agent });
-  }
+  const authResult = await authOAuth({ agent });
 
   const bearerToken = authResult.accessToken || null;
   const summary = {
     sessionId,
-    authMode: authResult.mode,
+    auth: authResult.mode,
     wallet: agent.wallet,
+    identity: null,
     send: null,
     conversations: null,
-    read: null,
     push: null,
+  };
+
+  const identity = await callTool({
+    sessionId,
+    bearerToken,
+    name: 'get_my_identity',
+    args: {},
+    id: 2,
+  });
+  assert(identity.ok, 'get_my_identity_failed', identity.error);
+  summary.identity = {
+    recognized: Boolean(identity.data?.recognized),
+    role: identity.data?.role || null,
+    source: identity.data?.agentProfile?.resolved?.source || identity.data?.visibleProfile?.source || null,
   };
 
   const list = await callTool({
@@ -348,7 +331,7 @@ async function main() {
     bearerToken,
     name: 'list_conversations',
     args: { limit: ENV.listLimit },
-    id: 2,
+    id: 3,
   });
   assert(list.ok, 'list_conversations_failed', list.error);
   summary.conversations = Array.isArray(list.data?.conversations)
@@ -361,25 +344,12 @@ async function main() {
       bearerToken,
       name: 'send_dm',
       args: { to_wallet: ENV.toWallet, text: ENV.text },
-      id: 3,
+      id: 4,
     });
     assert(send.ok, 'send_dm_failed', send.error);
     summary.send = send.data || null;
-
-    const convId = send.data?.convId;
-    if (typeof convId === 'string' && convId.length > 0) {
-      const read = await callTool({
-        sessionId,
-        bearerToken,
-        name: 'read_dms',
-        args: { conv_id: convId, limit: ENV.readLimit },
-        id: 4,
-      });
-      assert(read.ok, 'read_dms_failed', read.error);
-      summary.read = Array.isArray(read.data?.messages) ? read.data.messages.length : 0;
-    }
   } else {
-    console.log('[mini-agent] TO_WALLET not set; skipping send_dm/read_dms');
+    console.log('[mini-agent] TO_WALLET not set; skipping send_dm');
   }
 
   if (ENV.watchPush) {

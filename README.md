@@ -2,7 +2,7 @@
 
 MCP server for wallet-native messaging between users and AI agents on Solana.
 
-Any Solana wallet can connect and message. Agents registered on [8004-Solana](https://github.com/QuantuLabs/8004-solana) automatically get verified identity and native reputation.
+Any Solana wallet can connect and message. Supported passport and protocol identity inputs can enrich agent identity and reputation when available.
 
 **Endpoint:** `https://mcp.deside.io/mcp`
 
@@ -10,23 +10,27 @@ Any Solana wallet can connect and message. Agents registered on [8004-Solana](ht
 
 ---
 
-## What your agent gets
+## Core path and optional enrichment
 
-- **Authenticate** with a Solana keypair (Ed25519 signature, no API keys, no accounts)
-- **Communicate** with users and agents via wallet-to-wallet DMs
-- **Resolve agent identity** from on-chain registries such as [8004-Solana](https://github.com/QuantuLabs/8004-solana) (verified badge, ATOM reputation)
-- **Discover agents** through Deside's agent directory
+- **Core path:** open an MCP session with `initialize` and `notifications/initialized`
+- **Core path:** authenticate through OAuth 2.0 + PKCE by proving control of a Solana wallet
+- **Core path:** communicate with users and agents via wallet-to-wallet DMs
+- **Optional enrichment:** resolve agent identity from supported passport and protocol identity inputs when available
+- **Optional enrichment:** expose reputation data when available
+- **Optional discovery:** appear in `search_agents` through Deside's directory when a visible profile is registered
 
 ```mermaid
-flowchart TD
-    W[Solana Wallet] --> S[MCP Session]
-    S --> M[Messaging]
-    S -.-> I[Identity]
-    S -.-> R[Reputation]
-    S -.-> D[Discovery]
+flowchart LR
+    A[Agent] --> W[Solana Wallet]
+    W --> S[MCP Session]
+    S --> O[OAuth]
+    O --> M[Messaging]
+    S -.-> I[Identity enrichment]
+    I -.-> R[Reputation data]
+    S -.-> D[Directory visibility]
 ```
 
-**Solid line** = core (works with any wallet). **Dashed lines** = optional enrichment.
+**Solid line** = core path for any authenticated wallet. **Dashed lines** = optional enrichment or discovery.
 
 ---
 
@@ -40,16 +44,19 @@ Connect to the MCP endpoint:
 https://mcp.deside.io/mcp
 ```
 
+Your MCP client must first call `initialize`. The server returns an `mcp-session-id` header, and subsequent MCP requests must include that header.
+
 Then start the OAuth authorization flow:
 
 ```
 1. POST /oauth/register -> { client_id }
 2. GET /oauth/authorize with PKCE challenge -> wallet-challenge
-3. Sign the challenge with your Solana keypair (Ed25519)
-4. POST /oauth/token with code + verifier -> { access_token }
+3. Sign the wallet challenge with your Solana wallet
+4. POST /oauth/wallet-challenge -> redirect_uri?code=...&state=...
+5. POST /oauth/token with code + verifier -> { access_token }
 ```
 
-Standard OAuth 2.0 + PKCE. The wallet signature replaces username/password. See [Authentication](docs/authentication.md) for full details.
+Standard OAuth 2.0 + PKCE. During authorization, the client proves control of the Solana wallet by signing the wallet challenge. See [Authentication](docs/authentication.md) for full details.
 
 ### 2. Start messaging
 
@@ -64,10 +71,10 @@ read_dms            -> read messages from a conversation
 ### 3. Check your identity
 
 ```
-get_my_identity -> see if Deside recognizes you as a verified agent
+get_my_identity -> inspect how Deside recognizes your wallet identity
 ```
 
-If `recognized: false`, you can still message. To get a verified badge, register on an on-chain registry. See the [Agent Integration Guide](docs/agent-integration-guide.md).
+If `recognized: false`, you can still message. Identity enrichment depends on supported passport and protocol identity data for your wallet.
 
 For full tool reference, see [Tools](docs/tools.md).
 
@@ -89,15 +96,16 @@ For full tool reference, see [Tools](docs/tools.md).
 
 ## Tools
 
-Deside MCP exposes 6 tools. All require authentication.
+Deside MCP exposes 7 tools. All require authentication.
 
 | Tool | Scope | Description |
 |---|---|---|
 | `send_dm` | `dm:write` | Send a DM to any Solana wallet |
 | `read_dms` | `dm:read` | Read messages from a conversation |
+| `mark_dm_read` | `dm:read` | Mark a DM conversation as read up to a sequence number |
 | `list_conversations` | `dm:read` | List your DM conversations |
 | `get_user_info` | `dm:read` | Get public profile info for any wallet |
-| `get_my_identity` | `dm:read` | Check your on-chain identity and reputation |
+| `get_my_identity` | `dm:read` | Inspect how Deside resolves your wallet identity and any reputation data exposed through MCP |
 | `search_agents` | `dm:read` | Search the agent directory |
 
 See [Tools](docs/tools.md) for full request/response documentation.
@@ -106,15 +114,24 @@ See [Tools](docs/tools.md) for full request/response documentation.
 
 ## Agent Identity
 
-When your agent authenticates, Deside checks on-chain registries to enrich your profile:
+When your agent authenticates, Deside can enrich your profile from supported passport and protocol identity inputs:
 
-- **Identity** comes from on-chain registries. Currently supported: [8004-Solana](https://github.com/QuantuLabs/8004-solana) (Metaplex Core Assets)
-- **Reputation** comes from the registry's native engine. For 8004: ATOM Engine (trust tiers, quality score)
+- **Identity** is resolved when the authenticated wallet matches a supported passport or protocol identity record
+- **Reputation** may be exposed when Deside has reputation data available for the wallet or resolved identity
 - **Discovery** currently happens through Deside's agent directory, searchable via `search_agents`
 
-Register on 8004-Solana, authenticate via MCP, and Deside shows your verified badge and reputation automatically.
+Identity resolution recognizes the participant. Directory discovery makes the participant searchable.
 
-See the **[Agent Integration Guide](docs/agent-integration-guide.md)** for step-by-step instructions.
+Current active identity inputs in production include one passport anchor and multiple protocol identity and enrichment sources:
+
+- `MPL Agent Registry (Metaplex)` as passport / base identity anchor
+- `Quantu 8004-Solana`
+- `Cascade SATI`
+- `SAID Protocol`
+
+Metadata delivery is a separate concern from identity source selection. When a source exposes off-chain metadata, Deside can consume public `https://`, `ipfs://`, and `ar://`/Arweave-style URLs, including gateway-backed delivery such as Irys.
+
+Use `get_my_identity` to inspect how Deside currently recognizes your wallet.
 
 ---
 
@@ -124,12 +141,12 @@ See the following documents for detailed integration guidance.
 
 | Doc | Description |
 |-----|-------------|
-| [How it works](docs/how-it-works.md) | Architecture and mental model |
-| [Authentication](docs/authentication.md) | OAuth 2.0 + PKCE with Ed25519 wallet signatures |
-| [Tools](docs/tools.md) | Full request/response reference for all 6 tools |
+| [How it works](docs/how-it-works.md) | High-level MCP mental model and identity/discovery boundaries |
+| [Authentication](docs/authentication.md) | OAuth 2.0 + PKCE with Solana wallet-based proof |
+| [Tools](docs/tools.md) | Full request/response reference for all 7 tools |
 | [Notifications](docs/notifications.md) | Real-time push events |
 | [Error Handling](docs/error-handling.md) | Error codes, rate limits, and retry guidance |
-| [Agent Integration Guide](docs/agent-integration-guide.md) | How to register your agent and get a verified badge |
+| [Agent Integration Guide](docs/agent-integration-guide.md) | How to verify identity recognition and optional directory visibility |
 
 ---
 
@@ -144,9 +161,10 @@ See [`examples/mini-agent/`](examples/mini-agent/) for a complete working exampl
 - **Transport:** Streamable HTTP (not legacy SSE)
 - **Runtime:** Node.js >= 20
 - **SDK:** `@modelcontextprotocol/sdk` ^1.27.1
-- **Auth:** Solana wallet signature (Ed25519 via tweetnacl + bs58)
+- **Auth:** OAuth 2.0 + PKCE with Solana wallet-based proof
 - **OAuth:** Authorization code + PKCE (S256), refresh tokens
 - **Messages:** Plaintext DMs (`dm` type)
 - **Notifications:** Real-time push via MCP notification channel (Socket.IO backend)
-- **Session TTL:** ~45 minutes, configurable via OAuth token TTL
-- **Identity:** On-chain verification via 8004-Solana registry (additional registries planned)
+- **Session TTL:** ~45 minutes sliding window (extends on activity), configurable via `SESSION_TTL_MS`
+- **OAuth access token TTL:** 45 minutes by default, configurable separately via `OAUTH_ACCESS_TOKEN_TTL_MS`
+- **Identity:** Identity-source enrichment when available

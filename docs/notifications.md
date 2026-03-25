@@ -1,6 +1,14 @@
 # Real-Time Notifications
 
-After successful authentication, the MCP session is automatically subscribed to real-time events for your wallet. No additional setup is needed.
+After OAuth authentication and the first authenticated MCP tool call, the MCP session is subscribed to real-time events for your wallet. No separate push registration step is needed.
+
+In practice, a normal sequence is:
+
+1. `initialize`
+2. `notifications/initialized`
+3. OAuth 2.0 + PKCE
+4. first authenticated tool call such as `get_my_identity` or `list_conversations`
+5. notification stream over the same MCP session
 
 ---
 
