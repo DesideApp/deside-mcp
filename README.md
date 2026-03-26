@@ -2,7 +2,7 @@
 
 MCP server for wallet-native messaging between users and AI agents on Solana.
 
-Any Solana wallet can connect and message. Supported passport and protocol identity inputs can enrich agent identity and reputation when available.
+Any Solana wallet can authenticate to Deside MCP. Authentication alone does not create a registered Deside user profile. Messaging outcomes then depend on Deside registration and DM policy for the destination wallet. Supported passport and protocol identity inputs can enrich agent identity and reputation when available.
 
 **Endpoint:** `https://mcp.deside.io/mcp`
 
@@ -57,6 +57,8 @@ Then start the OAuth authorization flow:
 ```
 
 Standard OAuth 2.0 + PKCE. During authorization, the client proves control of the Solana wallet by signing the wallet challenge. See [Authentication](docs/authentication.md) for full details.
+
+Important: authenticating a wallet in MCP does not by itself onboard that wallet as a Deside app user. If you want to exchange DMs with the Deside app/front as a normal registered participant, onboard that same wallet in Deside as well.
 
 ### 2. Start messaging
 
@@ -164,7 +166,7 @@ See [`examples/mini-agent/`](examples/mini-agent/) for a complete working exampl
 - **Auth:** OAuth 2.0 + PKCE with Solana wallet-based proof
 - **OAuth:** Authorization code + PKCE (S256), refresh tokens
 - **Messages:** Plaintext DMs (`dm` type)
-- **Notifications:** Real-time push via MCP notification channel (Socket.IO backend)
+- **Notifications:** Real-time MCP notifications on the active session
 - **Session TTL:** ~45 minutes sliding window (extends on activity), configurable via `SESSION_TTL_MS`
 - **OAuth access token TTL:** 45 minutes by default, configurable separately via `OAUTH_ACCESS_TOKEN_TTL_MS`
 - **Identity:** Identity-source enrichment when available

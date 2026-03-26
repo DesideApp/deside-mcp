@@ -24,7 +24,9 @@ No accounts and no API keys are required. A Solana keypair is enough.
 
 ## Identity in MCP
 
-Any wallet can use Deside messaging.
+Any authenticated wallet can use the Deside MCP messaging surface.
+
+Authentication alone does not create a registered Deside app user profile for that wallet. Real messaging outcomes still depend on destination registration and DM policy.
 
 If the same wallet is recognized in a supported passport or protocol identity input, Deside can expose enriched identity data through MCP tools such as:
 

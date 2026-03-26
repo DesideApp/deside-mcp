@@ -18,14 +18,19 @@ This example is intentionally minimal. It is the canonical public MCP hello-worl
 
 ## Run
 
-`MCP_BASE_URL` points to the MCP endpoint you want to test, local or production.
+`MCP_BASE_URL` is the server origin and `MCP_PATH` is the MCP route.
+
+Examples:
+
+- local: `MCP_BASE_URL=http://localhost:3100` and `MCP_PATH=/mcp`
+- production: `MCP_BASE_URL=https://mcp.deside.io` and `MCP_PATH=/mcp`
 
 From repo root:
 
 ```bash
 cp deside-mcp/examples/mini-agent/.env.example deside-mcp/examples/mini-agent/.env
 set -a; source deside-mcp/examples/mini-agent/.env; set +a
-node deside-mcp/examples/mini-agent/mini-agent.js
+node --experimental-default-type=module deside-mcp/examples/mini-agent/mini-agent.js
 ```
 
 Or from `deside-mcp/`:
@@ -33,14 +38,17 @@ Or from `deside-mcp/`:
 ```bash
 cp examples/mini-agent/.env.example examples/mini-agent/.env
 set -a; source examples/mini-agent/.env; set +a
-node examples/mini-agent/mini-agent.js
+node --experimental-default-type=module examples/mini-agent/mini-agent.js
 ```
 
 ## Notes
 
 - If `AGENT_SECRET_KEY_B58` is not set, the script creates an ephemeral wallet and prints it.
 - Authentication uses OAuth 2.0 + PKCE automatically.
+- OAuth authentication alone does not create a registered Deside user profile for that wallet.
+- If you want to receive DMs from the Deside app/front or behave as a normal registered participant, use a wallet that is already onboarded in Deside.
 - The `.env.example` file configures this example client, not the MCP server.
+- This docs bundle does not declare `type: module`, so the example is run with `--experimental-default-type=module` in this packaging.
 - For deterministic tests, set:
   - `AGENT_SECRET_KEY_B58`
   - `TO_WALLET`

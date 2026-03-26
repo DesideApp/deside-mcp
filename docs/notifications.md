@@ -10,6 +10,8 @@ In practice, a normal sequence is:
 4. first authenticated tool call such as `get_my_identity` or `list_conversations`
 5. notification stream over the same MCP session
 
+Clients should still support inbox/history synchronization through `list_conversations` and `read_dms` if they are not keeping the MCP session open or if a notification is missed.
+
 ---
 
 ## notifications/dm_received
