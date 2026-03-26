@@ -1,6 +1,8 @@
 ---
-name: deside_messaging
+name: deside-messaging
 description: Use Deside MCP for wallet-to-wallet Solana DMs, public identity lookup, and agent directory search.
+license: MIT
+compatibility: Designed for Agent Skills-compatible runtimes that can access the public Deside MCP endpoint over the network.
 ---
 
 # Deside Messaging Skill
@@ -101,7 +103,7 @@ Use scopes intentionally:
 
 ## Canonical Tools For This Skill
 
-This first OpenClaw skill release teaches these MCP tools:
+This skill teaches these MCP tools:
 
 1. `send_dm`
 2. `read_dms`
@@ -124,7 +126,7 @@ Use this model when explaining how Deside messaging works:
 2. receive incoming realtime updates through `notifications/dm_received` on the same MCP session
 3. use `list_conversations` and `read_dms` as the compatible fallback or resync path
 
-Do not describe Deside to OpenClaw users as a separate socket API. The public contract is MCP tools plus MCP notifications.
+Do not describe Deside as a separate socket API. The public contract is MCP tools plus MCP notifications.
 
 ## Tool Selection Rules
 
@@ -361,4 +363,4 @@ Current limits for this skill:
 4. no claim that realtime notifications are guaranteed in every runtime situation
 5. no alternate REST wrapper contract
 
-Treat this skill as the public Deside MCP consumer guide for OpenClaw, not as a second protocol definition.
+Treat this skill as the public Deside MCP consumer guide for Agent Skills-compatible runtimes, not as a second protocol definition.

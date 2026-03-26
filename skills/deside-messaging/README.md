@@ -1,12 +1,17 @@
-# Deside Messaging OpenClaw Skill
+# Deside Messaging Skill Bundle
 
-This directory is the canonical source bundle for the OpenClaw / ClawHub skill
-that teaches agents how to use the public Deside MCP server.
+This directory is the canonical source bundle for the Deside Messaging skill.
+
+It is designed as an Agent Skills-compatible bundle that teaches agents how to
+use the public Deside MCP server.
 
 ## Files
 
-1. `SKILL.md` — primary OpenClaw skill artifact
+1. `SKILL.md` — primary skill artifact
 2. `README.md` — short operator notes for this bundle
+
+This bundle can be distributed through channels such as ClawHub, but the bundle
+itself remains the source of truth.
 
 ## Current Scope
 
@@ -91,6 +96,23 @@ Relevant files:
 
 1. `../../examples/mini-agent/README.md`
 2. `../../examples/mini-agent/mini-agent.js`
+
+## Installation Channels
+
+Validated channels:
+
+1. ClawHub:
+   - `clawhub install deside-messaging`
+2. Agent Skills CLI from a local path:
+   - `npx skills add /path/to/deside-mcp --skill deside-messaging`
+
+Portable/manual channel:
+
+1. copy this directory into a compatible skills folder as:
+   - `skills/deside-messaging/`
+
+GitHub repo install should be documented once the updated bundle has been pushed
+and validated from the public repository path.
 
 ## Publishing Rule
 

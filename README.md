@@ -158,6 +158,28 @@ See [`examples/mini-agent/`](examples/mini-agent/) for a complete working exampl
 
 ---
 
+## Agent Skill
+
+The Deside Messaging skill is published on ClawHub as `deside-messaging`.
+
+Install it with:
+
+```bash
+clawhub install deside-messaging
+```
+
+Agent Skills / Claude Code compatible install:
+
+```bash
+npx skills add /path/to/deside-mcp --skill deside-messaging
+```
+
+Source bundle:
+
+- [`skills/deside-messaging/`](skills/deside-messaging/)
+
+---
+
 ## Technical Details
 
 - **Transport:** Streamable HTTP (not legacy SSE)
