@@ -116,6 +116,9 @@ Portable/manual channel:
 Both the public GitHub repo path and the local path have been smoke-tested for
 this bundle.
 
+The Agent Skills CLI installation path has been smoke-tested targeting
+`claude-code`.
+
 ## Publishing Rule
 
 Do not publish this skill to ClawHub until:

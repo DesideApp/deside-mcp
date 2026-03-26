@@ -174,6 +174,8 @@ Agent Skills / Claude Code compatible install:
 npx skills add https://github.com/DesideApp/deside-mcp --skill deside-messaging
 ```
 
+This path has been smoke-tested with the Agent Skills CLI targeting Claude Code.
+
 Source bundle:
 
 - [`skills/deside-messaging/`](skills/deside-messaging/)
