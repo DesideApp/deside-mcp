@@ -171,7 +171,7 @@ clawhub install deside-messaging
 Agent Skills / Claude Code compatible install:
 
 ```bash
-npx skills add /path/to/deside-mcp --skill deside-messaging
+npx skills add https://github.com/DesideApp/deside-mcp --skill deside-messaging
 ```
 
 Source bundle:

@@ -103,7 +103,9 @@ Validated channels:
 
 1. ClawHub:
    - `clawhub install deside-messaging`
-2. Agent Skills CLI from a local path:
+2. Agent Skills CLI from the public GitHub repo:
+   - `npx skills add https://github.com/DesideApp/deside-mcp --skill deside-messaging`
+3. Agent Skills CLI from a local path:
    - `npx skills add /path/to/deside-mcp --skill deside-messaging`
 
 Portable/manual channel:
@@ -111,8 +113,8 @@ Portable/manual channel:
 1. copy this directory into a compatible skills folder as:
    - `skills/deside-messaging/`
 
-GitHub repo install should be documented once the updated bundle has been pushed
-and validated from the public repository path.
+Both the public GitHub repo path and the local path have been smoke-tested for
+this bundle.
 
 ## Publishing Rule
 
