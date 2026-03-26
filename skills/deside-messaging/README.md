@@ -119,6 +119,16 @@ this bundle.
 The Agent Skills CLI installation path has been smoke-tested targeting
 `claude-code`.
 
+## License Note
+
+Canonical license for this bundle:
+
+1. repository and source bundle: `MIT`
+2. ClawHub listing: platform-displayed `MIT-0`
+
+The repository remains the source of truth for the bundle and its canonical
+license.
+
 ## Publishing Rule
 
 Do not publish this skill to ClawHub until:

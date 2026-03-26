@@ -176,6 +176,12 @@ npx skills add https://github.com/DesideApp/deside-mcp --skill deside-messaging
 
 This path has been smoke-tested with the Agent Skills CLI targeting Claude Code.
 
+License note:
+
+- the canonical `deside-mcp` repository and skill bundle are licensed under `MIT`
+- ClawHub currently displays a platform-level skill license (`MIT-0`) for the published listing
+- the repository remains the canonical source of truth for the bundle and its license
+
 Source bundle:
 
 - [`skills/deside-messaging/`](skills/deside-messaging/)
