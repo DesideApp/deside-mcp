@@ -20,8 +20,6 @@ OAuth metadata:
 - `https://mcp.deside.io/.well-known/oauth-authorization-server`
 - `https://mcp.deside.io/.well-known/oauth-protected-resource/mcp`
 
-If you need bundle notes or the publication rule, see the local `README.md` next to this file.
-
 ## What Deside Is
 
 Deside exposes wallet-to-wallet messaging over MCP for Solana wallets.

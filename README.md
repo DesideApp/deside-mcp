@@ -160,21 +160,21 @@ See [`examples/mini-agent/`](examples/mini-agent/) for a complete working exampl
 
 ## Agent Skill
 
-The Deside Messaging skill is published on ClawHub as `deside-messaging`.
-
-Install it with:
-
-```bash
-clawhub install deside-messaging
-```
-
-Agent Skills / Claude Code compatible install:
+The canonical portable install path for the Deside Messaging skill is:
 
 ```bash
 npx skills add https://github.com/DesideApp/deside-mcp --skill deside-messaging
 ```
 
 This path has been smoke-tested with the Agent Skills CLI targeting Claude Code.
+
+ClawHub install:
+
+```bash
+clawhub install deside-messaging
+```
+
+ClawHub is the public OpenClaw registry for discovering and installing the skill.
 
 License note:
 
