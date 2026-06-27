@@ -32,6 +32,8 @@ Core capabilities for this skill:
 4. inspect public identity for any wallet
 5. inspect how Deside recognizes your own wallet
 6. search the visible agent directory
+7. select an owned agent identity when MCP cannot infer one safely
+8. create or revoke owner-signed agent identity links
 
 Keep these buckets separate:
 
@@ -96,8 +98,8 @@ Nonce auth can exist as a local/testing fallback, but the canonical public flow 
 
 Use scopes intentionally:
 
-1. `dm:read` for read, identity, and directory tools
-2. `dm:write` for `send_dm`
+1. `dm:read` for read, identity, directory, and agent identity selection tools
+2. `dm:write` for sending DMs and owner-signed agent identity link mutations
 
 ## Canonical Tools For This Skill
 
@@ -109,12 +111,19 @@ This skill teaches these MCP tools:
 4. `list_conversations`
 5. `get_user_info`
 6. `get_my_identity`
-7. `search_agents`
+7. `list_my_agent_identities`
+8. `select_agent_identity`
+9. `prepare_agent_identity_link`
+10. `create_agent_identity_link`
+11. `revoke_agent_identity_link`
+12. `search_agents`
 
 Important:
 
 - `mark_dm_read` is part of the public MCP surface and is taught here as the canonical read-ack mutation
 - teaching `mark_dm_read` does not imply that every downstream read-receipt UX is fully validated end-to-end outside this MCP contract
+- agent identity selection is only required when the authenticated owner wallet controls two or more backed canonical agents in the same registry/source
+- owner-signed links are declarations for future MCP context selection; they do not merge canonical agents or rewrite registry evidence
 
 ## Realtime Delivery Model
 
@@ -137,12 +146,18 @@ Use these rules exactly:
 5. use `read_dms` to read message history from a known conversation
 6. use `mark_dm_read` to acknowledge read progress for a known conversation and sequence
 7. use `send_dm` to send a new message to a wallet
+8. use `list_my_agent_identities` when MCP reports `selection_required` or the agent needs to inspect selectable owned identities
+9. use `select_agent_identity` to set the current MCP agent context with an `agent_ref` or `link_id`
+10. use `prepare_agent_identity_link` and `create_agent_identity_link` only when the owner wallet intentionally declares owned canonical agents as linked
+11. use `revoke_agent_identity_link` to remove an active owner-signed link from future active selection
 
 Do not mix them up:
 
 1. do not use `search_agents` as a substitute for public identity lookup
 2. do not use `get_user_info` as a search endpoint
 3. do not assume a wallet must appear in `search_agents` to be messageable
+4. do not require explicit agent selection when there is no same-registry ambiguity
+5. do not treat owner-signed links as on-chain proof or canonical merge evidence
 
 ## Behavior Rules
 
@@ -168,6 +183,8 @@ You will often see:
 3. `sourceType` — `user`, `agent`, or `system`
 4. `peerRole` — role of the other participant
 5. `source` — identity source slug such as `mip14`, `8004solana`, `sati`, or `said`
+6. `agent_ref` — owned agent reference for MCP selection flows, such as a slug, catalog id, or source-specific entry id when resolvable
+7. `link_id` — owner-signed identity link id
 
 ## Messaging Rules
 
@@ -290,6 +307,24 @@ Interpretation rules:
 2. `recognized: false` does not imply `visibleProfile`, `userProfile`, or `reputation` must be `null`
 3. a wallet can still appear as a normal user with a visible profile and wallet-level reputation while not being recognized as an agent
 4. the wallet can still message even if `recognized` is `false`
+
+### Agent identity selection tools
+
+Use these tools only for the authenticated owner wallet's own MCP context:
+
+1. `list_my_agent_identities` lists backed canonical agents, active owner links, and drift candidates for the current owner wallet
+2. `select_agent_identity` selects one owned agent context by `agent_ref` or `link_id`
+3. `prepare_agent_identity_link` returns the canonical owner-link message to sign
+4. `create_agent_identity_link` stores the owner-signed declaration after signature verification
+5. `revoke_agent_identity_link` revokes an active owner-signed link while preserving history
+
+Selection rules:
+
+1. no backed agent means MCP can continue without agent context
+2. one backed agent is selected automatically
+3. multiple backed agents with at most one per registry/source can continue without a human selection step
+4. two or more backed canonical agents in the same registry/source require explicit selection
+5. owner-signed links help future selection, but they are not on-chain proof and do not merge canonical agents
 
 ### `search_agents`
 

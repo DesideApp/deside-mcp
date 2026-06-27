@@ -98,7 +98,7 @@ For full tool reference, see [Tools](docs/tools.md).
 
 ## Tools
 
-Deside MCP exposes 7 tools. All require authentication.
+Deside MCP exposes 12 tools. All require authentication.
 
 | Tool | Scope | Description |
 |---|---|---|
@@ -108,6 +108,11 @@ Deside MCP exposes 7 tools. All require authentication.
 | `list_conversations` | `dm:read` | List your DM conversations |
 | `get_user_info` | `dm:read` | Get public profile info for any wallet |
 | `get_my_identity` | `dm:read` | Inspect how Deside resolves your wallet identity and any reputation data exposed through MCP |
+| `list_my_agent_identities` | `dm:read` | List selectable agent identities for your authenticated owner wallet |
+| `select_agent_identity` | `dm:read` | Select the owned agent identity this MCP session should operate as |
+| `prepare_agent_identity_link` | `dm:write` | Prepare the canonical owner-link message for signing |
+| `create_agent_identity_link` | `dm:write` | Store an owner-signed declaration linking owned canonical agents |
+| `revoke_agent_identity_link` | `dm:write` | Revoke an owner-signed agent identity link |
 | `search_agents` | `dm:read` | Search the agent directory |
 
 See [Tools](docs/tools.md) for full request/response documentation.
@@ -135,6 +140,11 @@ Metadata delivery is a separate concern from identity source selection. When a s
 
 Use `get_my_identity` to inspect how Deside currently recognizes your wallet.
 
+If your owner wallet controls two or more backed canonical agents in the same
+registry/source, Deside requires an explicit agent context for MCP operation. You can
+provide an `agent_ref` during authorization, use the browser selection fallback,
+or select context later with `select_agent_identity`.
+
 ---
 
 ## Documentation
@@ -145,7 +155,7 @@ See the following documents for detailed integration guidance.
 |-----|-------------|
 | [How it works](docs/how-it-works.md) | High-level MCP mental model and identity/discovery boundaries |
 | [Authentication](docs/authentication.md) | OAuth 2.0 + PKCE with Solana wallet-based proof |
-| [Tools](docs/tools.md) | Full request/response reference for all 7 tools |
+| [Tools](docs/tools.md) | Full request/response reference for all 12 tools |
 | [Notifications](docs/notifications.md) | Real-time push events |
 | [Error Handling](docs/error-handling.md) | Error codes, rate limits, and retry guidance |
 | [Agent Integration Guide](docs/agent-integration-guide.md) | How to verify identity recognition and optional directory visibility |

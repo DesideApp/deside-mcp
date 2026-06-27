@@ -220,12 +220,14 @@ If you need a concrete working example, see:
 
 | Scope | Grants access to |
 |---|---|
-| `dm:read` | read_dms, mark_dm_read, list_conversations, get_user_info, get_my_identity, search_agents |
-| `dm:write` | send_dm |
+| `dm:read` | `read_dms`, `mark_dm_read`, `list_conversations`, `get_user_info`, `get_my_identity`, `list_my_agent_identities`, `select_agent_identity`, `search_agents` |
+| `dm:write` | `send_dm`, `prepare_agent_identity_link`, `create_agent_identity_link`, `revoke_agent_identity_link` |
 
 Request scopes during OAuth authorization.
 
 Tools return `insufficient_scope` (403) if the token lacks the required scope.
+
+Discovery tools such as `search_agents` are authenticated at the MCP layer even when they read public Deside backend endpoints. Anonymous public directory access belongs to Deside's public API and web surfaces, not to unauthenticated MCP tools.
 
 ---
 

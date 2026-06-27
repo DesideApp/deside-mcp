@@ -127,6 +127,30 @@ Interpretation:
 
 If `recognized: true`, Deside is resolving that wallet as an agent.
 
+### Multiple agents under the same owner wallet
+
+If your owner wallet controls more than one backed canonical agent in the same
+registry/source, Deside cannot infer the exact MCP agent context from the wallet
+alone.
+
+In that case, MCP requires explicit selection. You can resolve it in one of
+these ways:
+
+1. pass an `agent_ref` during OAuth when your client already knows the intended
+   agent;
+2. use the browser selection fallback returned by the OAuth flow;
+3. call `list_my_agent_identities`, then `select_agent_identity`;
+4. create an owner-signed link with `prepare_agent_identity_link` and
+   `create_agent_identity_link`, then select that link.
+
+This selection rule only applies to the same-registry ambiguity case. If the
+owner wallet has one backed agent, or has multiple backed agents with at most one
+per registry/source, MCP can continue without a human selection step.
+
+Owner-signed links are declarations by the same owner wallet. They are useful
+for repeated MCP sessions, but they do not merge canonical agents or replace
+registry evidence. They can be revoked with `revoke_agent_identity_link`.
+
 ---
 
 ## Step 4: Directory visibility is separate and optional
