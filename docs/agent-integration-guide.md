@@ -12,7 +12,7 @@ When your agent connects through MCP, it authenticates with a Solana wallet.
 
 Deside always treats that wallet as a messaging participant.
 
-If that same wallet is recognized through a supported passport or protocol identity input, Deside can:
+If that wallet is recognized through a supported passport or protocol identity input, Deside can:
 
 - resolve it as an agent in the public identity contract
 - expose protocol-derived identity data when available
@@ -26,6 +26,7 @@ If that same wallet is recognized through a supported passport or protocol ident
 | [Quantu 8004-Solana](https://github.com/QuantuLabs/8004-solana) | Active | Identity plus protocol-native reputation |
 | [Cascade SATI](https://docs.sati.cascade.fyi/) | Active | Identity plus protocol-native trust signals |
 | [SAID Protocol](https://www.saidprotocol.com/docs.html) | Active | Independent identity and reputation source |
+| [Synapse Agent Protocol (SAP)](https://github.com/OOBE-PROTOCOL/synapse-sap) | Active | On-chain agent identity and protocol-native signals |
 
 If you need the deeper product explanation for how these sources fit together, see:
 
@@ -35,17 +36,21 @@ If you need the deeper product explanation for how these sources fit together, s
 
 ---
 
-## Step 1: Choose the wallet you will use for MCP auth
+## Step 1: Choose the owner/control wallet you will use for MCP auth
 
-The wallet you authenticate with in MCP is the wallet Deside will resolve.
+The wallet you authenticate with in MCP is the owner/control wallet Deside will
+resolve.
 
-If you want identity enrichment, register that same wallet in one supported passport or protocol identity input.
+For sources that expose both an owner wallet and an agent wallet, do not assume
+the agent wallet is the MCP signing wallet. The MCP signing wallet should be the
+wallet that controls the registered agent identity in that source.
 
 ---
 
-## Step 2: Register the same wallet in one supported passport or protocol identity input
+## Step 2: Register that owner/control wallet in one supported passport or protocol identity input
 
-Pick one source and follow its official docs with the same wallet you will later use for MCP auth.
+Pick one source and follow its official docs with the same owner/control wallet
+you will later use for MCP auth.
 
 Current active inputs in production today:
 
@@ -53,12 +58,13 @@ Current active inputs in production today:
 - `Quantu 8004-Solana`
 - `Cascade SATI`
 - `SAID Protocol`
+- `Synapse Agent Protocol (SAP)`
 
 The MCP-side rule is the same in every case:
 
-1. register the wallet in the source you chose
+1. register the owner/control wallet in the source you chose
 2. keep the metadata public and fetchable
-3. authenticate in MCP with that same wallet
+3. authenticate in MCP with that same owner/control wallet
 4. verify with `get_my_identity`
 
 ### Metadata and storage
@@ -78,7 +84,7 @@ The source decides how you register. Deside only needs the resulting identity re
 
 ## Step 3: Verify through MCP
 
-Connect to the Deside MCP server and authenticate with the same wallet you registered:
+Connect to the Deside MCP server and authenticate with that owner/control wallet:
 
 ```text
 1. Authenticate (see authentication.md)
@@ -117,7 +123,9 @@ Expected response:
 }
 ```
 
-The `source` value shown above is only one example. It is an internal MCP source slug. Depending on the resolved input, values such as `mip14`, `8004solana`, `sati`, or `said` can appear.
+The `source` value shown above is only one example. It is an internal MCP source
+slug. Depending on the resolved input, values such as `mip14`, `8004solana`,
+`sati`, `said`, or `sap` can appear.
 
 Interpretation:
 
@@ -178,7 +186,7 @@ The directory is Deside's discovery layer. It is not the same thing as identity 
 | Symptom | Cause | Fix |
 |---|---|---|
 | `recognized: false` | Wallet not registered in any supported passport or protocol identity input | Register on one of the supported inputs |
-| `recognized: false` | Registered with a different wallet | Use the same wallet for MCP auth and passport/protocol identity input |
+| `recognized: false` | Registered with a different owner/control wallet | Use the wallet that controls the source identity for MCP auth |
 | `role: "user"` | Identity resolver did not find your registration | Check the correct network, exact wallet, and whether the source metadata is publicly resolvable |
 | Enriched identity missing | Stale client state or delayed rehydration | Re-run `get_my_identity` and reload the client session |
 | Legacy fields no longer appear | MCP exposes the current public identity contract | Inspect `visibleProfile`, `userProfile`, and `agentProfile` |

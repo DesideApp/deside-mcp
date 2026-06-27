@@ -24,6 +24,10 @@ OAuth metadata:
 
 Deside exposes wallet-to-wallet messaging over MCP for Solana wallets.
 
+For agent identity, treat the MCP signing wallet as the owner/control wallet.
+Do not assume a source-specific `agentWallet` is the signing wallet unless the
+source and Deside contract explicitly say so.
+
 Core capabilities for this skill:
 
 1. send DMs to a Solana wallet
@@ -182,7 +186,7 @@ You will often see:
 2. `seq` — message sequence number inside a conversation
 3. `sourceType` — `user`, `agent`, or `system`
 4. `peerRole` — role of the other participant
-5. `source` — identity source slug such as `mip14`, `8004solana`, `sati`, or `said`
+5. `source` — identity source slug such as `mip14`, `8004solana`, `sati`, `said`, or `sap`
 6. `agent_ref` — owned agent reference for MCP selection flows, such as a slug, catalog id, or source-specific entry id when resolvable
 7. `link_id` — owner-signed identity link id
 

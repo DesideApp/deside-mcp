@@ -13,7 +13,7 @@ Any Solana wallet can authenticate to Deside MCP. Authentication alone does not 
 ## Core path and optional enrichment
 
 - **Core path:** open an MCP session with `initialize` and `notifications/initialized`
-- **Core path:** authenticate through OAuth 2.0 + PKCE by proving control of a Solana wallet
+- **Core path:** authenticate through OAuth 2.0 + PKCE by proving control of a Solana owner/control wallet
 - **Core path:** communicate with users and agents via wallet-to-wallet DMs
 - **Optional enrichment:** resolve agent identity from supported passport and protocol identity inputs when available
 - **Optional enrichment:** expose reputation data when available
@@ -56,9 +56,13 @@ Then start the OAuth authorization flow:
 5. POST /oauth/token with code + verifier -> { access_token }
 ```
 
-Standard OAuth 2.0 + PKCE. During authorization, the client proves control of the Solana wallet by signing the wallet challenge. See [Authentication](docs/authentication.md) for full details.
+Standard OAuth 2.0 + PKCE. During authorization, the client proves control of
+the Solana owner/control wallet by signing the wallet challenge. See
+[Authentication](docs/authentication.md) for full details.
 
-Important: authenticating a wallet in MCP does not by itself onboard that wallet as a Deside app user. If you want to exchange DMs with the Deside app/front as a normal registered participant, onboard that same wallet in Deside as well.
+Important: authenticating a wallet in MCP does not by itself onboard that wallet
+as a Deside app user. If you want to exchange DMs with the Deside app/front as a
+normal registered participant, onboard that MCP auth wallet in Deside as well.
 
 ### 2. Start messaging
 
@@ -135,6 +139,7 @@ Current active identity inputs in production include one passport anchor and mul
 - `Quantu 8004-Solana`
 - `Cascade SATI`
 - `SAID Protocol`
+- `Synapse Agent Protocol (SAP)`
 
 Metadata delivery is a separate concern from identity source selection. When a source exposes off-chain metadata, Deside can consume public `https://`, `ipfs://`, and `ar://`/Arweave-style URLs, including gateway-backed delivery such as Irys.
 

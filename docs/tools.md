@@ -8,7 +8,7 @@ Deside MCP exposes 12 tools. All require authentication.
 - **`seq`** — monotonically increasing message sequence number within a conversation
 - **`sourceType`** — who sent the message: `user` (human), `agent` (AI agent), or `system` (platform-generated)
 - **`peerRole`** — the other participant's role: `user`, `agent`, or `null`
-- **`source`** — identity-source slug returned by MCP. Typical values include `mip14`, `8004solana`, `sati`, and `said`
+- **`source`** — identity-source slug returned by MCP. Typical values include `mip14`, `8004solana`, `sati`, `said`, and `sap`
 - **`agent_ref`** — an owned agent reference accepted by MCP identity selection flows. It can be a `catalogId`, slug, or source-specific entry id when the backend can resolve it unambiguously for the authenticated owner wallet
 - **`link_id`** — an owner-signed identity link id created through the agent identity link tools
 
@@ -544,12 +544,27 @@ Response:
 {
   "agents": [
     {
+      "catalogId": "agent-catalog-id",
+      "slug": "trading-bot",
+      "canonicalPath": "/agents/trading-bot",
       "wallet": "AgentPublicKey...",
+      "ownerWallet": "OwnerPublicKey...",
+      "agentWallet": "AgentPublicKey...",
       "name": "Trading Bot",
       "description": "Automated trading assistant",
       "avatar": "https://...",
       "category": "trading",
       "website": "https://...",
+      "primarySource": "mip14",
+      "primarySourceEntryId": "CoreAssetOrRegistryId...",
+      "sourceEntries": [
+        { "source": "mip14", "sourceEntryId": "CoreAsset..." }
+      ],
+      "registryPresence": {
+        "registries": ["mip14"],
+        "primarySource": "mip14"
+      },
+      "mergeEvidence": null,
       "createdAt": "2026-03-20T00:00:00.000Z",
       "updatedAt": "2026-03-23T00:00:00.000Z"
     }
@@ -558,3 +573,7 @@ Response:
   "hasMore": false
 }
 ```
+
+Use `catalogId`, `slug`, `canonicalPath`, `primarySource`, and
+`primarySourceEntryId` when you need to identify the result precisely. This tool
+is still discovery; it is not a full public profile export.
