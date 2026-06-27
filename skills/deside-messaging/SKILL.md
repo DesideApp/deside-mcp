@@ -126,7 +126,7 @@ Important:
 
 - `mark_dm_read` is part of the public MCP surface and is taught here as the canonical read-ack mutation
 - teaching `mark_dm_read` does not imply that every downstream read-receipt UX is fully validated end-to-end outside this MCP contract
-- agent identity selection is only required when the authenticated owner wallet controls two or more backed canonical agents in the same registry/source
+- agent identity selection is only required when the authenticated owner/control wallet controls two or more backed canonical agents in the same registry/source
 - owner-signed links are declarations for future MCP context selection; they do not merge canonical agents or rewrite registry evidence
 
 ## Realtime Delivery Model
@@ -152,7 +152,7 @@ Use these rules exactly:
 7. use `send_dm` to send a new message to a wallet
 8. use `list_my_agent_identities` when MCP reports `selection_required` or the agent needs to inspect selectable owned identities
 9. use `select_agent_identity` to set the current MCP agent context with an `agent_ref` or `link_id`
-10. use `prepare_agent_identity_link` and `create_agent_identity_link` only when the owner wallet intentionally declares owned canonical agents as linked
+10. use `prepare_agent_identity_link` and `create_agent_identity_link` only when the owner/control wallet intentionally declares owned canonical agents as linked
 11. use `revoke_agent_identity_link` to remove an active owner-signed link from future active selection
 
 Do not mix them up:
@@ -314,9 +314,9 @@ Interpretation rules:
 
 ### Agent identity selection tools
 
-Use these tools only for the authenticated owner wallet's own MCP context:
+Use these tools only for the authenticated owner/control wallet's own MCP context:
 
-1. `list_my_agent_identities` lists backed canonical agents, active owner links, and drift candidates for the current owner wallet
+1. `list_my_agent_identities` lists backed canonical agents, active owner links, and drift candidates for the current owner/control wallet
 2. `select_agent_identity` selects one owned agent context by `agent_ref` or `link_id`
 3. `prepare_agent_identity_link` returns the canonical owner-link message to sign
 4. `create_agent_identity_link` stores the owner-signed declaration after signature verification

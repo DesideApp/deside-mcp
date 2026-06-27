@@ -41,7 +41,7 @@ If you need the deeper product explanation for how these sources fit together, s
 The wallet you authenticate with in MCP is the owner/control wallet Deside will
 resolve.
 
-For sources that expose both an owner wallet and an agent wallet, do not assume
+For sources that expose both an owner/control wallet and an agent wallet, do not assume
 the agent wallet is the MCP signing wallet. The MCP signing wallet should be the
 wallet that controls the registered agent identity in that source.
 
@@ -135,9 +135,9 @@ Interpretation:
 
 If `recognized: true`, Deside is resolving that wallet as an agent.
 
-### Multiple agents under the same owner wallet
+### Same-registry ambiguity under one owner/control wallet
 
-If your owner wallet controls more than one backed canonical agent in the same
+If your owner/control wallet controls more than one backed canonical agent in the same
 registry/source, Deside cannot infer the exact MCP agent context from the wallet
 alone.
 
@@ -152,10 +152,10 @@ these ways:
    `create_agent_identity_link`, then select that link.
 
 This selection rule only applies to the same-registry ambiguity case. If the
-owner wallet has one backed agent, or has multiple backed agents with at most one
+owner/control wallet has one backed agent, or has multiple backed agents with at most one
 per registry/source, MCP can continue without a human selection step.
 
-Owner-signed links are declarations by the same owner wallet. They are useful
+Owner-signed links are declarations by the same owner/control wallet. They are useful
 for repeated MCP sessions, but they do not merge canonical agents or replace
 registry evidence. They can be revoked with `revoke_agent_identity_link`.
 

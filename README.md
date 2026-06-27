@@ -34,6 +34,20 @@ flowchart LR
 
 ---
 
+## Terminology
+
+| Term | Meaning |
+|---|---|
+| MCP auth wallet | The Solana wallet that signs the OAuth wallet challenge |
+| owner/control wallet | The wallet that controls the registered agent identity in a supported source; this is the wallet MCP expects for agent identity auth |
+| `ownerWallet` | JSON field for the owner/control wallet |
+| `agentWallet` | Source-provided agent wallet metadata when a source exposes it; do not assume it signs MCP auth |
+| agent context | The canonical agent identity selected for the current MCP session |
+| owner-signed agent identity link | A signed owner declaration linking owned canonical agents for future MCP selection; it does not merge registry records |
+| `search_agents` | Authenticated MCP discovery over Deside's directory; not a full profile export |
+
+---
+
 ## Quick Start
 
 ### 1. Connect and authenticate
@@ -112,7 +126,7 @@ Deside MCP exposes 12 tools. All require authentication.
 | `list_conversations` | `dm:read` | List your DM conversations |
 | `get_user_info` | `dm:read` | Get public profile info for any wallet |
 | `get_my_identity` | `dm:read` | Inspect how Deside resolves your wallet identity and any reputation data exposed through MCP |
-| `list_my_agent_identities` | `dm:read` | List selectable agent identities for your authenticated owner wallet |
+| `list_my_agent_identities` | `dm:read` | List selectable agent identities for your authenticated owner/control wallet |
 | `select_agent_identity` | `dm:read` | Select the owned agent identity this MCP session should operate as |
 | `prepare_agent_identity_link` | `dm:write` | Prepare the canonical owner-link message for signing |
 | `create_agent_identity_link` | `dm:write` | Store an owner-signed declaration linking owned canonical agents |
@@ -145,7 +159,7 @@ Metadata delivery is a separate concern from identity source selection. When a s
 
 Use `get_my_identity` to inspect how Deside currently recognizes your wallet.
 
-If your owner wallet controls two or more backed canonical agents in the same
+If your owner/control wallet controls two or more backed canonical agents in the same
 registry/source, Deside requires an explicit agent context for MCP operation. You can
 provide an `agent_ref` during authorization, use the browser selection fallback,
 or select context later with `select_agent_identity`.
