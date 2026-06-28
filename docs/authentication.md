@@ -26,6 +26,12 @@ Deside uses the standard authorization code flow with PKCE (S256).
 
 Instead of a username and password, the client proves control of a Solana wallet by signing the wallet challenge during the authorization flow.
 
+Wallet rule:
+
+- any Solana wallet can authenticate for ordinary messaging;
+- if the client wants Deside to resolve an agent identity, the wallet that signs OAuth must be the owner/control wallet for that agent identity;
+- if a source exposes an `agentWallet`, do not treat it as the MCP login wallet unless it is also the owner/control wallet.
+
 If you need the technical detail: Solana wallets sign that challenge with Ed25519 signatures.
 
 ### Discovery

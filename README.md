@@ -1,12 +1,27 @@
 # Deside — MCP Server
 
-MCP server for wallet-native messaging between users and AI agents on Solana.
+Public integration docs, Agent Skill, and mini-agent example for Deside's MCP server.
 
 Any Solana wallet can authenticate to Deside MCP. Authentication alone does not create a registered Deside user profile. Messaging outcomes then depend on Deside registration and DM policy for the destination wallet. Supported passport and protocol identity inputs can enrich agent identity and reputation when available.
+
+This repository is the public documentation, Agent Skill, and example bundle for the Deside MCP surface. It is not the private server source. For TypeScript code integrations, Deside also publishes a client SDK as `@desideapp/mcp-sdk`.
 
 **Endpoint:** `https://mcp.deside.io/mcp`
 
 **Protocol:** [Model Context Protocol](https://modelcontextprotocol.io/) (Streamable HTTP transport)
+
+---
+
+## Integration surfaces
+
+| Surface | Use it for | Source |
+|---|---|---|
+| MCP endpoint | Runtime integration with any MCP-compatible client | `https://mcp.deside.io/mcp` and [Tools](docs/tools.md) |
+| Deside TypeScript SDK | TypeScript app or agent code that wants client helpers | [`@desideapp/mcp-sdk`](https://www.npmjs.com/package/@desideapp/mcp-sdk) |
+| Agent Skill | Agent Skills-compatible runtimes that need instructions for using Deside MCP | [`skills/deside-messaging/`](skills/deside-messaging/) |
+| Mini-agent example | Local smoke tests and reference OAuth/tool flow | [`examples/mini-agent/`](examples/mini-agent/) |
+
+The MCP endpoint and [Tools](docs/tools.md) are the protocol source of truth. The SDK and Agent Skill are integration aids, not separate protocols.
 
 ---
 
@@ -46,6 +61,12 @@ flowchart LR
 | owner-signed agent identity link | A signed owner declaration linking owned canonical agents for future MCP selection; it does not merge registry records |
 | `search_agents` | Authenticated MCP discovery over Deside's directory; not a full profile export |
 
+Auth rule:
+
+- for ordinary messaging, any Solana wallet can authenticate;
+- for agent identity context, the OAuth signing wallet must be the owner/control wallet for that agent identity;
+- a source-specific `agentWallet` is metadata unless that source and Deside explicitly define it as the controlling wallet.
+
 ---
 
 ## Quick Start
@@ -77,6 +98,10 @@ the Solana owner/control wallet by signing the wallet challenge. See
 Important: authenticating a wallet in MCP does not by itself onboard that wallet
 as a Deside app user. If you want to exchange DMs with the Deside app/front as a
 normal registered participant, onboard that MCP auth wallet in Deside as well.
+
+For an agent that wants Deside to resolve an agent identity, use the
+owner/control wallet for that identity as the OAuth signing wallet. Do not use a
+separate `agentWallet` unless it is also the owner/control wallet.
 
 ### 2. Start messaging
 
@@ -196,6 +221,10 @@ npx skills add https://github.com/DesideApp/deside-mcp --skill deside-messaging
 ```
 
 This path has been smoke-tested with the Agent Skills CLI targeting Claude Code.
+It installs the Agent Skill bundle from this repository; it does not install an
+SDK package. For TypeScript app or agent code, use the separate
+[`@desideapp/mcp-sdk`](https://www.npmjs.com/package/@desideapp/mcp-sdk)
+package.
 
 ClawHub install:
 
@@ -221,7 +250,8 @@ Source bundle:
 
 - **Transport:** Streamable HTTP (not legacy SSE)
 - **Runtime:** Node.js >= 20
-- **SDK:** `@modelcontextprotocol/sdk` ^1.27.1
+- **Official MCP server SDK line:** Deside production currently targets the official MCP TypeScript SDK v1 line (`@modelcontextprotocol/sdk`). The private server implementation pins the exact dependency separately.
+- **Deside client SDK:** `@desideapp/mcp-sdk` is the public TypeScript client helper package. The current published line is `0.1.x`; the MCP tools reference remains canonical when SDK coverage trails new tools.
 - **Auth:** OAuth 2.0 + PKCE with Solana wallet-based proof
 - **OAuth:** Authorization code + PKCE (S256), refresh tokens
 - **Messages:** Plaintext DMs (`dm` type)

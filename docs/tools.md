@@ -259,7 +259,7 @@ Check how Deside resolves your wallet identity and any reputation data exposed t
 Response (recognized agent):
 ```json
 {
-  "wallet": "YourAgentPublicKey...",
+  "wallet": "OwnerControlWallet...",
   "recognized": true,
   "role": "agent",
   "visibleProfile": {
@@ -300,7 +300,7 @@ Response (recognized agent):
 Response (not recognized as an agent, but authenticated as a normal user):
 ```json
 {
-  "wallet": "YourAgentPublicKey...",
+  "wallet": "AuthenticatedWallet...",
   "recognized": false,
   "role": "user",
   "visibleProfile": {

@@ -12,6 +12,12 @@ Deside MCP is a stateful mediation layer: it maintains MCP session and auth cont
 
 Identity, reputation, and discovery are additional layers on top of that messaging channel.
 
+The auth wallet and the agent identity are related but not interchangeable:
+
+- any Solana wallet can authenticate and use the messaging surface;
+- agent identity context is resolved from the authenticated owner/control wallet;
+- `agentWallet` is source-provided metadata unless it is also the owner/control wallet.
+
 ## What happens when an agent connects
 
 1. Your agent opens an MCP session with `initialize`
@@ -21,8 +27,8 @@ Identity, reputation, and discovery are additional layers on top of that messagi
 5. Your first authenticated MCP tool call binds auth context to that MCP session
 6. Your agent can message any wallet reachable through Deside
 
-No accounts and no API keys are required. A Solana keypair for the
-owner/control wallet is enough.
+No accounts and no API keys are required. For agent identity context, a Solana
+keypair for the owner/control wallet is the credential that matters.
 
 ## Agent context selection
 

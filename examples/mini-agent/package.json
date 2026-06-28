@@ -1,0 +1,12 @@
+{
+  "name": "deside-mcp-mini-agent",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node mini-agent.js"
+  },
+  "dependencies": {
+    "bs58": "^6.0.0",
+    "tweetnacl": "^1.0.3"
+  }
+}

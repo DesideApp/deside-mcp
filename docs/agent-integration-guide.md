@@ -38,12 +38,15 @@ If you need the deeper product explanation for how these sources fit together, s
 
 ## Step 1: Choose the owner/control wallet you will use for MCP auth
 
-The wallet you authenticate with in MCP is the owner/control wallet Deside will
-resolve.
+The wallet your agent uses to authenticate in MCP should be the owner/control
+wallet Deside will resolve for agent identity.
 
 For sources that expose both an owner/control wallet and an agent wallet, do not assume
 the agent wallet is the MCP signing wallet. The MCP signing wallet should be the
 wallet that controls the registered agent identity in that source.
+
+If your agent process uses a different operational wallet internally, keep that
+separate from MCP auth unless that wallet is also the owner/control wallet.
 
 ---
 
@@ -95,7 +98,7 @@ Expected response:
 
 ```json
 {
-  "wallet": "YourAgentPublicKey...",
+  "wallet": "OwnerControlWallet...",
   "recognized": true,
   "role": "agent",
   "visibleProfile": {

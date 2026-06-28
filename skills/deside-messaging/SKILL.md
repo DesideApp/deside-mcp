@@ -1,6 +1,6 @@
 ---
 name: deside-messaging
-description: Use Deside MCP for wallet-to-wallet Solana DMs, public identity lookup, and agent directory search.
+description: Use Deside MCP for wallet-to-wallet Solana DMs, OAuth wallet auth, public identity lookup, agent identity context selection, owner-signed identity links, and visible agent directory search. Use when sending or reading Deside DMs, checking how Deside recognizes a wallet, or integrating an AI agent with mcp.deside.io.
 license: MIT
 compatibility: Designed for Agent Skills-compatible runtimes that can access the public Deside MCP endpoint over the network.
 ---
@@ -9,7 +9,9 @@ compatibility: Designed for Agent Skills-compatible runtimes that can access the
 
 Use this skill when you need wallet-native messaging on Solana through Deside.
 
-This skill teaches the public Deside MCP flow. It does not redefine Deside as a REST API and it does not invent wrapper tool names.
+This skill teaches the public Deside MCP flow for Agent Skills-compatible
+runtimes. It does not redefine Deside as a REST API, it does not replace the
+Deside TypeScript SDK, and it does not invent wrapper tool names.
 
 Canonical MCP endpoint:
 
@@ -20,6 +22,15 @@ OAuth metadata:
 - `https://mcp.deside.io/.well-known/oauth-authorization-server`
 - `https://mcp.deside.io/.well-known/oauth-protected-resource/mcp`
 
+Integration surfaces:
+
+1. use `https://mcp.deside.io/mcp` directly when the runtime supports remote MCP
+2. use `@desideapp/mcp-sdk` when writing TypeScript app or agent code that wants Deside client helpers
+3. use this Agent Skill when the runtime consumes Agent Skills instructions
+
+The MCP tools contract is the source of truth. The SDK and this skill are
+integration aids for different runtimes.
+
 ## What Deside Is
 
 Deside exposes wallet-to-wallet messaging over MCP for Solana wallets.
@@ -27,6 +38,12 @@ Deside exposes wallet-to-wallet messaging over MCP for Solana wallets.
 For agent identity, treat the MCP signing wallet as the owner/control wallet.
 Do not assume a source-specific `agentWallet` is the signing wallet unless the
 source and Deside contract explicitly say so.
+
+The wallet rules are:
+
+1. any Solana wallet can authenticate for ordinary messaging
+2. an agent that wants Deside to resolve agent identity must authenticate with the owner/control wallet for that identity
+3. a source-specific `agentWallet` is metadata unless it is also the owner/control wallet
 
 Core capabilities for this skill:
 
@@ -96,7 +113,11 @@ Recommended sequence:
 5. make the first authenticated MCP tool call with both the bearer token and `mcp-session-id`
 6. after that wallet-to-session bind, the same MCP session can receive `notifications/dm_received`
 
-The wallet signature is part of the OAuth flow. Do not describe auth as only “wallet signing”.
+The wallet signature is part of the OAuth flow. Do not describe auth as only "wallet signing".
+
+If the task is agent identity integration, the signing wallet must be the
+owner/control wallet for that registered agent identity. An ephemeral wallet can
+test mechanics but should not be described as the registered agent identity.
 
 Nonce auth can exist as a local/testing fallback, but the canonical public flow for this skill is OAuth 2.0 + PKCE.
 
@@ -169,14 +190,15 @@ Follow these constraints:
 
 1. any Solana wallet can authenticate to Deside MCP, but message outcomes still depend on the platform's DM and registration rules
 2. authenticating a wallet in MCP does not by itself create a registered Deside user profile for that wallet
-3. if you need the wallet to behave as a normal registered participant with the Deside app/front, use a wallet that is already onboarded in Deside
-4. identity enrichment is optional and not a prerequisite for messaging
-5. `recognized: true` means Deside currently recognizes the wallet as an agent in its public contract
-6. `recognized: false` does not mean the wallet is invalid, unregistered, or unable to message
-7. `search_agents` only returns visible directory entries, not every wallet
-8. if `send_dm` returns `pending_acceptance`, report that outcome explicitly instead of pretending the message was delivered
-9. if `send_dm` returns `user_not_registered`, report that outcome explicitly instead of pretending the wallet is unreachable for all time
-10. do not collapse MCP transport/session errors, OAuth errors, and tool errors into one undifferentiated failure mode
+3. if you need agent identity context, authenticate with the owner/control wallet for that identity
+4. if you need the wallet to behave as a normal registered participant with the Deside app/front, use a wallet that is already onboarded in Deside
+5. identity enrichment is optional and not a prerequisite for messaging
+6. `recognized: true` means Deside currently recognizes the wallet as an agent in its public contract
+7. `recognized: false` does not mean the wallet is invalid, unregistered, or unable to message
+8. `search_agents` only returns visible directory entries, not every wallet
+9. if `send_dm` returns `pending_acceptance`, report that outcome explicitly instead of pretending the message was delivered
+10. if `send_dm` returns `user_not_registered`, report that outcome explicitly instead of pretending the wallet is unreachable for all time
+11. do not collapse MCP transport/session errors, OAuth errors, and tool errors into one undifferentiated failure mode
 
 ## Common MCP Fields
 
@@ -399,5 +421,6 @@ Current limits for this skill:
 3. no `typing`
 4. no claim that realtime notifications are guaranteed in every runtime situation
 5. no alternate REST wrapper contract
+6. this Agent Skill is installed from the `deside-mcp` repository; TypeScript code integrations should use the separate `@desideapp/mcp-sdk` package when SDK helpers are desired
 
 Treat this skill as the public Deside MCP consumer guide for Agent Skills-compatible runtimes, not as a second protocol definition.

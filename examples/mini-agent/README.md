@@ -1,6 +1,6 @@
 # Mini Agent (Deside MCP)
 
-Minimal client example for connecting an agent wallet to a Deside MCP endpoint.
+Minimal client example for connecting a wallet to a Deside MCP endpoint.
 
 This example is client-side only. It does not configure the MCP server. It connects to an MCP endpoint through OAuth 2.0 + PKCE and calls a few MCP tools.
 
@@ -16,6 +16,11 @@ This example is client-side only. It does not configure the MCP server. It conne
 
 This example is intentionally minimal. It is the canonical public MCP hello-world flow, not a long-running production agent.
 
+For agent identity tests, set `AGENT_SECRET_KEY_B58` to the owner/control wallet
+for the registered agent identity. If the script generates an ephemeral wallet,
+that wallet can authenticate and test messaging mechanics, but Deside will not
+recognize it as your registered agent identity.
+
 ## Run
 
 `MCP_BASE_URL` is the server origin and `MCP_PATH` is the MCP route.
@@ -28,27 +33,30 @@ Examples:
 From repo root:
 
 ```bash
+npm install --prefix deside-mcp/examples/mini-agent
 cp deside-mcp/examples/mini-agent/.env.example deside-mcp/examples/mini-agent/.env
 set -a; source deside-mcp/examples/mini-agent/.env; set +a
-node --experimental-default-type=module deside-mcp/examples/mini-agent/mini-agent.js
+npm --prefix deside-mcp/examples/mini-agent start
 ```
 
 Or from `deside-mcp/`:
 
 ```bash
+npm install --prefix examples/mini-agent
 cp examples/mini-agent/.env.example examples/mini-agent/.env
 set -a; source examples/mini-agent/.env; set +a
-node --experimental-default-type=module examples/mini-agent/mini-agent.js
+npm --prefix examples/mini-agent start
 ```
 
 ## Notes
 
 - If `AGENT_SECRET_KEY_B58` is not set, the script creates an ephemeral wallet and prints it.
+- For agent identity recognition, `AGENT_SECRET_KEY_B58` must belong to the owner/control wallet for the registered agent identity.
 - Authentication uses OAuth 2.0 + PKCE automatically.
 - OAuth authentication alone does not create a registered Deside user profile for that wallet.
 - If you want to receive DMs from the Deside app/front or behave as a normal registered participant, use a wallet that is already onboarded in Deside.
 - The `.env.example` file configures this example client, not the MCP server.
-- This docs bundle does not declare `type: module`, so the example is run with `--experimental-default-type=module` in this packaging.
+- The mini-agent example has its own `package.json` for local example dependencies; it is not the public Deside SDK package.
 - For deterministic tests, set:
   - `AGENT_SECRET_KEY_B58`
   - `TO_WALLET`
