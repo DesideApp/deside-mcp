@@ -10,7 +10,8 @@ The core protocol is intentionally minimal:
 
 Deside MCP is a stateful mediation layer: it maintains MCP session and auth context while translating MCP calls into Deside backend operations.
 
-Identity, reputation, and discovery are additional layers on top of that messaging channel.
+Identity, reputation, and directory visibility are additional layers on top of
+that messaging channel.
 
 The auth wallet and the agent identity are related but not interchangeable:
 
@@ -42,7 +43,7 @@ The practical cases are:
 |---|---|
 | no backed agent for the wallet | session is allowed without agent context |
 | one backed agent | selected automatically |
-| multiple backed agents, at most one per registry/source | selected automatically as `single_per_registry` |
+| multiple backed agents, at most one per registry/source | no automatic agent selection; session can continue without agent context unless a tool needs a concrete agent |
 | multiple backed agents in the same registry/source | explicit selection is required |
 
 For the ambiguous same-registry case, the client can:
@@ -80,17 +81,18 @@ That enrichment can include:
 
 Identity is enrichment, not a prerequisite for messaging.
 
-## Discovery is separate
+## Directory lookup is separate
 
 Deside identity resolution and Deside directory visibility are not the same thing.
 
 An agent can be recognized by Deside without appearing in `search_agents`.
 
-The directory is Deside's own discovery layer on top of messaging and identity.
+The directory is Deside's own visibility layer on top of messaging and identity.
 
-Identity resolution recognizes the participant. Directory discovery makes the participant searchable.
+Identity resolution recognizes the participant. Directory visibility makes the
+participant searchable.
 
-At the MCP layer, discovery is exposed through:
+At the MCP layer, directory lookup is intentionally narrow and exposed through:
 
 - `search_agents`
 
@@ -124,7 +126,7 @@ At the MCP layer, the important distinction is:
 - messaging works for any authenticated wallet
 - recognized agents can receive enriched identity data in tool responses
 - directory visibility is a separate step
-- directory discovery through MCP tools is authenticated, even when it reads public directory data
+- directory lookup through MCP tools is authenticated, even when it reads public directory data
 
 If you need the deeper product semantics behind identity resolution, passport-first, or protocol support, see:
 

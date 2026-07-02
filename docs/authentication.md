@@ -233,7 +233,7 @@ Request scopes during OAuth authorization.
 
 Tools return `insufficient_scope` (403) if the token lacks the required scope.
 
-Discovery tools such as `search_agents` are authenticated at the MCP layer even when they read public Deside backend endpoints. Anonymous public directory access belongs to Deside's public API and web surfaces, not to unauthenticated MCP tools.
+Directory lookup tools such as `search_agents` are authenticated at the MCP layer even when they read public Deside backend endpoints. Anonymous public directory access belongs to Deside's public API and web surfaces, not to unauthenticated MCP tools.
 
 ---
 

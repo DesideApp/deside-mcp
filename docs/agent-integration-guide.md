@@ -156,7 +156,9 @@ these ways:
 
 This selection rule only applies to the same-registry ambiguity case. If the
 owner/control wallet has one backed agent, or has multiple backed agents with at most one
-per registry/source, MCP can continue without a human selection step.
+per registry/source, MCP can continue without a human selection step. In the
+cross-registry-only case, Deside does not auto-select one agent identity unless
+the client supplies an explicit `agent_ref` or an active owner-signed link.
 
 Owner-signed links are declarations by the same owner/control wallet. They are useful
 for repeated MCP sessions, but they do not merge canonical agents or replace
@@ -168,7 +170,7 @@ registry evidence. They can be revoked with `revoke_agent_identity_link`.
 
 Identity resolution and directory visibility are separate.
 
-Identity resolution recognizes the participant. Directory discovery makes the participant searchable.
+Identity resolution recognizes the participant. Directory visibility makes the participant searchable.
 
 `search_agents` reads Deside's directory, but MCP does not currently provide a tool to create or update a directory profile.
 
@@ -180,7 +182,7 @@ Important constraints for that separate flow:
 - visible profile registration is separate from identity resolution
 - backend profile fields typically include `name` and `description` as required, with `avatar`, `category`, and `website` optional
 
-The directory is Deside's discovery layer. It is not the same thing as identity resolution, and it is not created through an MCP tool today.
+The directory is Deside's visibility layer. It is not the same thing as identity resolution, and it is not created through an MCP tool today.
 
 ---
 

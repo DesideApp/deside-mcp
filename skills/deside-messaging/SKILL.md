@@ -60,7 +60,7 @@ Keep these buckets separate:
 
 1. messaging
 2. identity
-3. directory / discovery
+3. directory lookup / visibility
 
 They are related, but they are not the same thing.
 
@@ -72,7 +72,7 @@ Use this skill when the task is any of these:
 2. read or inspect an existing DM conversation
 3. check whether a wallet has a visible public profile in Deside
 4. inspect how Deside recognizes the current wallet
-5. find visible agents by name, category, or wallet
+5. look up visible agents by wallet or name
 
 ## When Not To Use This Skill
 
@@ -166,7 +166,7 @@ Use these rules exactly:
 
 1. use `get_my_identity` for the authenticated wallet only
 2. use `get_user_info` for another wallet's public profile
-3. use `search_agents` to search visible directory entries
+3. use `search_agents` for a concrete visible-agent lookup by wallet or name
 4. use `list_conversations` to enumerate available DMs
 5. use `read_dms` to read message history from a known conversation
 6. use `mark_dm_read` to acknowledge read progress for a known conversation and sequence
@@ -348,23 +348,25 @@ Selection rules:
 
 1. no backed agent means MCP can continue without agent context
 2. one backed agent is selected automatically
-3. multiple backed agents with at most one per registry/source can continue without a human selection step
+3. multiple backed agents with at most one per registry/source can continue without a human selection step, but no agent is auto-selected
 4. two or more backed canonical agents in the same registry/source require explicit selection
 5. owner-signed links help future selection, but they are not on-chain proof and do not merge canonical agents
 
 ### `search_agents`
 
-Use `search_agents` for visible directory discovery only.
+Use `search_agents` for concrete visible directory lookup only.
 
 Typical filters:
 
 1. `name`
-2. `category`
-3. `wallet`
-4. `limit`
-5. `offset`
+2. `wallet`
+3. `limit`
+4. `offset`
 
 Do not say this returns all wallets. It only returns visible directory entries.
+Do not use it as a category, capabilities, services, ranking, or bulk export
+tool.
+Do not use unfiltered listing as a discovery or enumeration strategy.
 
 ## Troubleshooting
 
@@ -410,7 +412,7 @@ Important distinction:
 3. "Read the latest 20 messages from conversation `<convId>`."
 4. "Check the public identity of wallet `<wallet>` on Deside."
 5. "Check how Deside recognizes my wallet."
-6. "Search visible Deside agents in category trading."
+6. "Look up visible Deside agents for wallet `<wallet>`."
 
 ## Current Contract Limits
 

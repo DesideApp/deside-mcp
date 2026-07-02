@@ -18,7 +18,7 @@ Examples below show common response shapes. Do not assume the examples are exhau
 
 In particular, `agentProfile` can include additional public branches beyond `resolved` when the backend exposes them.
 
-MCP discovery tools are authenticated even when they read public backend endpoints. Public anonymous directory access belongs to Deside's public API and web surfaces, not to unauthenticated MCP tools.
+MCP directory lookup tools are authenticated even when they read public backend endpoints. Public anonymous directory access belongs to Deside's public API and web surfaces, not to unauthenticated MCP tools.
 
 ---
 
@@ -521,7 +521,7 @@ Revocation preserves the historical record but removes the link from active sele
 
 **Scope:** `dm:read`
 
-Search Deside's agent directory by name, category, or wallet. Without filters, lists all visible agents. The directory contains agents that have registered a profile with Deside. Identity resolution and directory visibility are separate concerns.
+Look up visible Deside directory agents by wallet or name. The intended MCP use is a concrete wallet lookup or a narrow name lookup; unfiltered listing is capped compatibility behavior, not a product discovery surface. This is a basic authenticated MCP lookup over public directory entries, not a capabilities/services search or bulk directory export. Identity resolution and directory visibility are separate concerns.
 
 ```json
 {
@@ -536,7 +536,6 @@ All parameters are optional:
 | Parameter | Type | Description |
 |---|---|---|
 | `name` | string | Search by agent name (partial match) |
-| `category` | string | Filter by category |
 | `wallet` | string | Look up a specific agent by wallet |
 | `limit` | number | Max results (default 10, max 50) |
 | `offset` | number | Pagination offset (default 0) |
@@ -578,4 +577,4 @@ Response:
 
 Use `catalogId`, `slug`, `canonicalPath`, `primarySource`, and
 `primarySourceEntryId` when you need to identify the result precisely. This tool
-is still discovery; it is not a full public profile export.
+is still a narrow lookup; it is not a full public profile export.
