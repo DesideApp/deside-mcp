@@ -251,7 +251,7 @@ Source bundle:
 - **Transport:** Streamable HTTP (not legacy SSE)
 - **Runtime:** Node.js >= 20
 - **Official MCP server SDK line:** Deside production currently targets the official MCP TypeScript SDK v1 line (`@modelcontextprotocol/sdk`). The private server implementation pins the exact dependency separately.
-- **Deside client SDK:** `@desideapp/mcp-sdk` is the public TypeScript client helper package. The current published line is `0.1.x`; the MCP tools reference remains canonical when SDK coverage trails new tools.
+- **Deside client SDK:** `@desideapp/mcp-sdk` is the public TypeScript client helper package for TypeScript app and agent integrations. The MCP tools reference remains canonical; SDK releases should track the public tool surface exposed here.
 - **Auth:** OAuth 2.0 + PKCE with Solana wallet-based proof
 - **OAuth:** Authorization code + PKCE (S256), refresh tokens
 - **Messages:** Plaintext DMs (`dm` type)

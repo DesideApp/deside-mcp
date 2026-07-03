@@ -31,6 +31,13 @@ Integration surfaces:
 The MCP tools contract is the source of truth. The SDK and this skill are
 integration aids for different runtimes.
 
+Reference surfaces:
+
+1. use the `deside-mcp` repository README for the public integration overview
+2. use `deside-mcp/docs/authentication.md` for OAuth and wallet proof details
+3. use `deside-mcp/docs/tools.md` for canonical tool request and response shapes
+4. use `@desideapp/mcp-sdk` for TypeScript client helpers, not as a separate protocol
+
 ## What Deside Is
 
 Deside exposes wallet-to-wallet messaging over MCP for Solana wallets.
