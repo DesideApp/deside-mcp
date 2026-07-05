@@ -22,7 +22,7 @@ If that wallet is recognized through a supported passport or protocol identity i
 
 | Input | Status | Description |
 |---|---|---|
-| [MPL Agent Registry (Metaplex)](https://www.metaplex.com/docs/smart-contracts/mpl-agent) | Active | Passport / canonical identity anchor |
+| [Metaplex Agent Registry](https://www.metaplex.com/docs/smart-contracts/mpl-agent) | Active | Passport / canonical identity anchor |
 | [Quantu 8004-Solana](https://github.com/QuantuLabs/8004-solana) | Active | Identity plus protocol-native reputation |
 | [Cascade SATI](https://docs.sati.cascade.fyi/) | Active | Identity plus protocol-native trust signals |
 | [SAID Protocol](https://www.saidprotocol.com/docs.html) | Active | Independent identity and reputation source |
@@ -30,9 +30,9 @@ If that wallet is recognized through a supported passport or protocol identity i
 
 If you need the deeper product explanation for how these sources fit together, see:
 
-- [`deside-app/docs/identity-resolution.md`](https://github.com/DesideApp/deside-app/blob/main/docs/identity-resolution.md)
-- [`deside-app/docs/passport-first.md`](https://github.com/DesideApp/deside-app/blob/main/docs/passport-first.md)
-- [`deside-app/docs/protocol-support.md`](https://github.com/DesideApp/deside-app/blob/main/docs/protocol-support.md)
+- [Identity Resolution And Auth Boundaries](https://github.com/DesideApp/deside-docs/blob/main/agent-identity/identity-resolution-and-auth-boundaries.md)
+- [Passport And Protocol Registries](https://github.com/DesideApp/deside-docs/blob/main/agent-identity/passport-and-protocol-registries.md)
+- [Agent Directory And Profile Surfaces](https://github.com/DesideApp/deside-docs/blob/main/agent-identity/agent-directory-and-profile-surfaces.md)
 
 ---
 
@@ -57,7 +57,7 @@ you will later use for MCP auth.
 
 Current active inputs in production today:
 
-- `MPL Agent Registry (Metaplex)` as passport / base identity anchor
+- `Metaplex Agent Registry` as passport / base identity anchor
 - `Quantu 8004-Solana`
 - `Cascade SATI`
 - `SAID Protocol`
@@ -151,14 +151,14 @@ these ways:
    agent;
 2. use the browser selection fallback returned by the OAuth flow;
 3. call `list_my_agent_identities`, then `select_agent_identity`;
-4. create an owner-signed link with `prepare_agent_identity_link` and
+4. create an owner-signed agent identity link with `prepare_agent_identity_link` and
    `create_agent_identity_link`, then select that link.
 
 This selection rule only applies to the same-registry ambiguity case. If the
 owner/control wallet has one backed agent, or has multiple backed agents with at most one
 per registry/source, MCP can continue without a human selection step. In the
 cross-registry-only case, Deside does not auto-select one agent identity unless
-the client supplies an explicit `agent_ref` or an active owner-signed link.
+the client supplies an explicit `agent_ref` or an active owner-signed agent identity link.
 
 Owner-signed links are declarations by the same owner/control wallet. They are useful
 for repeated MCP sessions, but they do not merge canonical agents or replace

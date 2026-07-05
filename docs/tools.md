@@ -350,7 +350,7 @@ Selection is only required for the same-registry ambiguity case. If an owner/con
 
 **Scope:** `dm:read`
 
-List the backed canonical agent identities, existing owner links, and drift candidates Deside can associate with the authenticated owner/control wallet.
+List the backed canonical agent identities, existing owner-signed agent identity links, and drift candidates Deside can associate with the authenticated owner/control wallet.
 
 ```json
 {}
@@ -386,7 +386,7 @@ Response:
 Interpretation:
 
 - `agents` are selectable identities backed by a Deside `agent` user
-- `links` are active owner-signed links between owned canonical agents
+- `links` are active owner-signed agent identity links between owned canonical agents
 - `drift` are visible directory candidates for the owner/control wallet that are not currently backed by an agent user and cannot be selected for MCP context
 
 ### select_agent_identity

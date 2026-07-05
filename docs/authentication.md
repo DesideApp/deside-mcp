@@ -69,7 +69,7 @@ Example response:
   "authorization_servers": ["https://mcp.deside.io"],
   "scopes_supported": ["dm:read", "dm:write"],
   "resource_name": "deside-dm",
-  "resource_documentation": "https://mcp.deside.io/docs"
+  "resource_documentation": "https://docs.deside.io/mcp/mcp"
 }
 ```
 

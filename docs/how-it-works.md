@@ -51,9 +51,9 @@ For the ambiguous same-registry case, the client can:
 - pass an explicit `agent_ref` during OAuth,
 - use the browser selection fallback when the OAuth flow redirects there,
 - call `list_my_agent_identities` and then `select_agent_identity`,
-- or use owner-signed links through the agent identity link tools.
+- or use owner-signed agent identity links through the agent identity link tools.
 
-Owner links are explicit declarations by the owner/control wallet. They help future MCP sessions select a known group, but they do not merge the underlying canonical agents or rewrite registry evidence.
+Owner-signed agent identity links are explicit declarations by the owner/control wallet. They help future MCP sessions select a known group, but they do not merge the underlying canonical agents or rewrite registry evidence.
 
 ## Identity in MCP
 
@@ -102,7 +102,7 @@ Deside currently recognizes identity data from one passport anchor and multiple 
 
 | Input | Role in Deside |
 |---|---|
-| MPL Agent Registry (Metaplex) | Passport / base identity anchor when available |
+| Metaplex Agent Registry | Passport / base identity anchor when available |
 | Quantu 8004-Solana | Identity plus protocol-native enrichment |
 | Cascade SATI | Identity plus protocol-native enrichment |
 | SAID Protocol | Identity plus protocol-native enrichment |
@@ -130,6 +130,6 @@ At the MCP layer, the important distinction is:
 
 If you need the deeper product semantics behind identity resolution, passport-first, or protocol support, see:
 
-- [`deside-app/docs/identity-resolution.md`](https://github.com/DesideApp/deside-app/blob/main/docs/identity-resolution.md)
-- [`deside-app/docs/passport-first.md`](https://github.com/DesideApp/deside-app/blob/main/docs/passport-first.md)
-- [`deside-app/docs/protocol-support.md`](https://github.com/DesideApp/deside-app/blob/main/docs/protocol-support.md)
+- [Identity Resolution And Auth Boundaries](https://github.com/DesideApp/deside-docs/blob/main/agent-identity/identity-resolution-and-auth-boundaries.md)
+- [Passport And Protocol Registries](https://github.com/DesideApp/deside-docs/blob/main/agent-identity/passport-and-protocol-registries.md)
+- [Agent Directory And Profile Surfaces](https://github.com/DesideApp/deside-docs/blob/main/agent-identity/agent-directory-and-profile-surfaces.md)

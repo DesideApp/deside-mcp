@@ -7,3 +7,5 @@
 * [Notifications](docs/notifications.md)
 * [Error Handling](docs/error-handling.md)
 * [Agent Integration Guide](docs/agent-integration-guide.md)
+* [Agent Skill](skills/deside-messaging/SKILL.md)
+* [Mini Agent Example](examples/mini-agent/README.md)

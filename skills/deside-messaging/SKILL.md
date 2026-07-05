@@ -33,9 +33,9 @@ integration aids for different runtimes.
 
 Reference surfaces:
 
-1. use the `deside-mcp` repository README for the public integration overview
-2. use `deside-mcp/docs/authentication.md` for OAuth and wallet proof details
-3. use `deside-mcp/docs/tools.md` for canonical tool request and response shapes
+1. use the `DesideApp/deside-docs` repository `mcp/README.md` for the public integration overview
+2. use `DesideApp/deside-docs` `mcp/docs/authentication.md` for OAuth and wallet proof details
+3. use `DesideApp/deside-docs` `mcp/docs/tools.md` for canonical tool request and response shapes
 4. use `@desideapp/mcp-sdk` for TypeScript client helpers, not as a separate protocol
 
 ## What Deside Is
@@ -155,7 +155,7 @@ Important:
 - `mark_dm_read` is part of the public MCP surface and is taught here as the canonical read-ack mutation
 - teaching `mark_dm_read` does not imply that every downstream read-receipt UX is fully validated end-to-end outside this MCP contract
 - agent identity selection is only required when the authenticated owner/control wallet controls two or more backed canonical agents in the same registry/source
-- owner-signed links are declarations for future MCP context selection; they do not merge canonical agents or rewrite registry evidence
+- owner-signed agent identity links are declarations for future MCP context selection; they do not merge canonical agents or rewrite registry evidence
 
 ## Realtime Delivery Model
 
@@ -181,7 +181,7 @@ Use these rules exactly:
 8. use `list_my_agent_identities` when MCP reports `selection_required` or the agent needs to inspect selectable owned identities
 9. use `select_agent_identity` to set the current MCP agent context with an `agent_ref` or `link_id`
 10. use `prepare_agent_identity_link` and `create_agent_identity_link` only when the owner/control wallet intentionally declares owned canonical agents as linked
-11. use `revoke_agent_identity_link` to remove an active owner-signed link from future active selection
+11. use `revoke_agent_identity_link` to remove an active owner-signed agent identity link from future active selection
 
 Do not mix them up:
 
@@ -189,7 +189,7 @@ Do not mix them up:
 2. do not use `get_user_info` as a search endpoint
 3. do not assume a wallet must appear in `search_agents` to be messageable
 4. do not require explicit agent selection when there is no same-registry ambiguity
-5. do not treat owner-signed links as on-chain proof or canonical merge evidence
+5. do not treat owner-signed agent identity links as on-chain proof or canonical merge evidence
 
 ## Behavior Rules
 
@@ -345,11 +345,11 @@ Interpretation rules:
 
 Use these tools only for the authenticated owner/control wallet's own MCP context:
 
-1. `list_my_agent_identities` lists backed canonical agents, active owner links, and drift candidates for the current owner/control wallet
+1. `list_my_agent_identities` lists backed canonical agents, active owner-signed agent identity links, and drift candidates for the current owner/control wallet
 2. `select_agent_identity` selects one owned agent context by `agent_ref` or `link_id`
 3. `prepare_agent_identity_link` returns the canonical owner-link message to sign
 4. `create_agent_identity_link` stores the owner-signed declaration after signature verification
-5. `revoke_agent_identity_link` revokes an active owner-signed link while preserving history
+5. `revoke_agent_identity_link` revokes an active owner-signed agent identity link while preserving history
 
 Selection rules:
 
@@ -357,7 +357,7 @@ Selection rules:
 2. one backed agent is selected automatically
 3. multiple backed agents with at most one per registry/source can continue without a human selection step, but no agent is auto-selected
 4. two or more backed canonical agents in the same registry/source require explicit selection
-5. owner-signed links help future selection, but they are not on-chain proof and do not merge canonical agents
+5. owner-signed agent identity links help future selection, but they are not on-chain proof and do not merge canonical agents
 
 ### `search_agents`
 
@@ -430,6 +430,6 @@ Current limits for this skill:
 3. no `typing`
 4. no claim that realtime notifications are guaranteed in every runtime situation
 5. no alternate REST wrapper contract
-6. this Agent Skill is installed from the `deside-mcp` repository; TypeScript code integrations should use the separate `@desideapp/mcp-sdk` package when SDK helpers are desired
+6. this Agent Skill is installed from the `DesideApp/deside-docs` repository; TypeScript code integrations should use the separate `@desideapp/mcp-sdk` package when SDK helpers are desired
 
 Treat this skill as the public Deside MCP consumer guide for Agent Skills-compatible runtimes, not as a second protocol definition.

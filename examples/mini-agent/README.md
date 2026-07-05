@@ -33,13 +33,13 @@ Examples:
 From repo root:
 
 ```bash
-npm install --prefix deside-mcp/examples/mini-agent
-cp deside-mcp/examples/mini-agent/.env.example deside-mcp/examples/mini-agent/.env
-set -a; source deside-mcp/examples/mini-agent/.env; set +a
-npm --prefix deside-mcp/examples/mini-agent start
+npm install --prefix mcp/examples/mini-agent
+cp mcp/examples/mini-agent/.env.example mcp/examples/mini-agent/.env
+set -a; source mcp/examples/mini-agent/.env; set +a
+npm --prefix mcp/examples/mini-agent start
 ```
 
-Or from `deside-mcp/`:
+Or from `mcp/`:
 
 ```bash
 npm install --prefix examples/mini-agent
