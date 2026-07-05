@@ -156,7 +156,7 @@ This skill teaches these MCP tools:
 
 Important:
 
-- `llm_complete` is feature-gated; if the tool is not listed, do not invent a replacement
+- `llm_complete` requires `llm:invoke`; if a specific client connection does not list the tool, do not invent a replacement
 - `llm_complete` requires `llm:invoke`, even when the selected tier is `free`
 - `mark_dm_read` is part of the public MCP surface and is taught here as the canonical read-ack mutation
 - teaching `mark_dm_read` does not imply that every downstream read-receipt UX is fully validated end-to-end outside this MCP contract
@@ -484,6 +484,6 @@ Current limits for this skill:
 4. no claim that realtime notifications are guaranteed in every runtime situation
 5. no alternate REST wrapper contract
 6. this Agent Skill is installed from the `DesideApp/deside-docs` repository; TypeScript code integrations should use the separate `@desideapp/mcp-sdk` package when SDK helpers are desired
-7. `llm_complete` is optional and feature-gated by the MCP server; do not assume it is available unless `tools/list` exposes it
+7. use `llm_complete` only when `tools/list` exposes it for the current MCP connection
 
 Treat this skill as the public Deside MCP consumer guide for Agent Skills-compatible runtimes, not as a second protocol definition.

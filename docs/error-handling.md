@@ -80,7 +80,7 @@ These are OAuth flow responses, not MCP tool errors.
 | `PAYMENT_REQUIRED` | 402 | Paid `llm_complete` tier requires x402 payment; payload includes `data.accepts[]` |
 | `PAYMENT_INVALID` | 402 | x402 payment signature, nonce, amount, network, asset, or receiver is invalid |
 | `PAYMENT_FAILED` | 402 | x402 settlement failed after provider success |
-| `MODEL_UNAVAILABLE` | 400 | Requested LLM tier cannot currently be served |
+| `MODEL_UNAVAILABLE` | 400 | Requested LLM tier cannot be served for this request |
 | `PROVIDER_TIMEOUT` | 504 | Upstream model provider timed out |
 | `PROVIDER_ERROR` | 502 | Upstream model provider failed |
 | `NOT_FOUND` | 404 | Conversation or user not found |

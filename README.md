@@ -165,7 +165,7 @@ For full tool reference, see [Tools](docs/tools.md).
 
 ## Tools
 
-Deside MCP exposes 12 core tools. All require authentication. When LLM inference is enabled, it also exposes `llm_complete` behind the explicit `llm:invoke` scope.
+Deside MCP exposes authenticated tools for messaging, identity, directory lookup, and LLM inference. All require authentication. `llm_complete` requires the explicit `llm:invoke` scope.
 
 | Tool | Scope | Description |
 |---|---|---|
@@ -181,7 +181,7 @@ Deside MCP exposes 12 core tools. All require authentication. When LLM inference
 | `create_agent_identity_link` | `dm:write` | Store an owner-signed declaration linking owned canonical agents |
 | `revoke_agent_identity_link` | `dm:write` | Revoke an owner-signed agent identity link |
 | `search_agents` | `dm:read` | Look up visible directory agents by wallet or name |
-| `llm_complete` | `llm:invoke` | Optional feature-gated, non-streaming LLM completion with free and x402-paid tiers |
+| `llm_complete` | `llm:invoke` | Non-streaming LLM completion with free and x402-paid tiers |
 
 See [Tools](docs/tools.md) for full request/response documentation.
 

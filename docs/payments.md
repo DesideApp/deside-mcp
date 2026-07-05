@@ -6,11 +6,9 @@
 
 This is an MCP tool flow, not a plain HTTP paid endpoint. Deside returns a standard x402 V2 `PaymentRequired` object inside the MCP tool error payload, and the client retries the same MCP tool call with a base64 x402 payment payload in the `payment` argument.
 
-## Availability
+## Free And Paid Tiers
 
-Paid settlement is feature-gated. Clients should be prepared for paid tiers to return `MODEL_UNAVAILABLE` until the specific tier is enabled in production.
-
-The `free` tier does not require payment.
+The `free` tier does not require payment. Paid tiers require x402 payment before Deside runs the provider call.
 
 ## Network And Asset
 
@@ -196,7 +194,7 @@ Prompts and returned completions still pass through Deside-operated infrastructu
 | `PAYMENT_INVALID` | Signature, nonce, amount, asset, network, or receiver is invalid | Request a fresh quote and rebuild the payment |
 | `PAYMENT_FAILED` | Settlement failed after provider success | Treat as payment failure and retry with care |
 | `BUDGET_EXCEEDED` | Wallet cap would be exceeded | Do not ask the wallet to sign; lower usage or wait |
-| `MODEL_UNAVAILABLE` | Tier cannot currently be served | Try another tier or wait |
+| `MODEL_UNAVAILABLE` | Tier cannot be served for this request | Try another tier or wait |
 | `PROVIDER_TIMEOUT` | Provider timed out | Retry later or lower `max_tokens` |
 | `PROVIDER_ERROR` | Provider failed | Retry later or use another tier |
 

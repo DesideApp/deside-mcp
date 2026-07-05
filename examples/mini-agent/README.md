@@ -58,7 +58,7 @@ npm --prefix examples/mini-agent start
 - If you want to receive DMs from the Deside app/front or behave as a normal registered participant, use a wallet that is already onboarded in Deside.
 - The `.env.example` file configures this example client, not the MCP server.
 - The mini-agent example has its own `package.json` for local example dependencies; it is not the public Deside SDK package.
-- `llm_complete` is feature-gated. For the optional free LLM loop, set `MINI_AGENT_LLM_FREE=1`, set `TO_WALLET`, and include `llm:invoke` in `OAUTH_SCOPE`.
+- For the optional free LLM loop, set `MINI_AGENT_LLM_FREE=1`, set `TO_WALLET`, and include `llm:invoke` in `OAUTH_SCOPE`.
 - For deterministic tests, set:
   - `AGENT_SECRET_KEY_B58`
   - `TO_WALLET`

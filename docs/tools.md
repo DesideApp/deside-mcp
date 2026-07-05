@@ -2,9 +2,9 @@
 
 > Deprecated mirror. Current page: [`deside-docs/mcp/docs/tools.md`](https://github.com/DesideApp/deside-docs/blob/main/mcp/docs/tools.md).
 
-Deside MCP exposes 12 core tools. All require authentication.
+Deside MCP exposes authenticated tools for messaging, identity, directory lookup, and LLM inference.
 
-When LLM inference is enabled, Deside also exposes `llm_complete`. That tool is feature-gated by `LLM_ENABLED` and requires the explicit `llm:invoke` OAuth scope.
+`llm_complete` requires the explicit `llm:invoke` OAuth scope.
 
 ## Common fields
 
@@ -265,8 +265,7 @@ Availability:
 - the tool is not listed when `LLM_ENABLED=false`
 - clients must request and receive `llm:invoke`; it is not part of the default OAuth scope
 - `free` calls do not require payment
-- paid tiers use x402 with USDC on Solana mainnet when paid settlement is enabled
-- during staged rollout, paid tiers can return `MODEL_UNAVAILABLE` until x402 settlement is active for that tier
+- paid tiers use x402 with USDC on Solana mainnet
 
 Input:
 
@@ -306,7 +305,7 @@ Tiers:
 
 | Tier | Price per call | Max output tokens | Notes |
 |---|---:|---:|---|
-| `free` | 0 USDC | 1024 | Free sidecar model |
+| `free` | 0 USDC | 1024 | Free inference tier |
 | `cheap` | 0.002 USDC | 1024 | Low-cost paid tier |
 | `balanced` | 0.010 USDC | 2048 | Balanced paid tier |
 | `strong` | 0.050 USDC | 4096 | Strongest paid tier |
@@ -336,8 +335,8 @@ For paid calls, `cost` is the tier's fixed USDC price and `paymentReceipt` is th
 Negative contract:
 
 ```txt
-llm_complete no tiene memoria, no llama tools, no navega, no hace streaming,
-no persiste prompts ni respuestas, no acepta nombres de modelos concretos.
+llm_complete has no memory, does not call tools, does not browse, does not stream,
+does not persist prompts or responses, and does not accept concrete provider model names.
 ```
 
 Privacy:
@@ -355,7 +354,7 @@ Errors:
 | `PAYMENT_REQUIRED` | 402 | Paid tier requires x402 payment; error payload includes payment requirements |
 | `PAYMENT_INVALID` | 402 | Signed payment payload, nonce, amount, network, or receiver is invalid |
 | `PAYMENT_FAILED` | 402 | Settlement failed after provider success |
-| `MODEL_UNAVAILABLE` | 400 | Requested tier cannot currently be served |
+| `MODEL_UNAVAILABLE` | 400 | Requested tier cannot be served for this request |
 | `PROVIDER_TIMEOUT` | 504 | Upstream model provider timed out |
 | `PROVIDER_ERROR` | 502 | Upstream model provider failed |
 
