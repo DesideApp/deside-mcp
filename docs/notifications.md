@@ -1,5 +1,7 @@
 # Real-Time Notifications
 
+> Deprecated mirror. Current page: [`deside-docs/mcp/docs/notifications.md`](https://github.com/DesideApp/deside-docs/blob/main/mcp/docs/notifications.md).
+
 After OAuth authentication and the first authenticated MCP tool call, the MCP session is subscribed to real-time events for your wallet. No separate push registration step is needed.
 
 In practice, a normal sequence is:

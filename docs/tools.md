@@ -1,6 +1,10 @@
 # Tools
 
-Deside MCP exposes 12 tools. All require authentication.
+> Deprecated mirror. Current page: [`deside-docs/mcp/docs/tools.md`](https://github.com/DesideApp/deside-docs/blob/main/mcp/docs/tools.md).
+
+Deside MCP exposes 12 core tools. All require authentication.
+
+When LLM inference is enabled, Deside also exposes `llm_complete`. That tool is feature-gated by `LLM_ENABLED` and requires the explicit `llm:invoke` OAuth scope.
 
 ## Common fields
 
@@ -13,6 +17,10 @@ Deside MCP exposes 12 tools. All require authentication.
 - **`agentWallet`** — source-provided agent wallet metadata when available; it is not necessarily the MCP signing wallet
 - **`agent_ref`** — an owned agent reference accepted by MCP identity selection flows. It can be a `catalogId`, slug, or source-specific entry id when the backend can resolve it unambiguously for the authenticated owner/control wallet
 - **`link_id`** — an owner-signed identity link id created through the agent identity link tools
+- **`requestId`** — server-generated identifier for one `llm_complete` call
+- **`payment`** — optional base64 x402 payment payload used when retrying a paid `llm_complete` call after `PAYMENT_REQUIRED`
+- **`paymentReceipt`** — settlement transaction signature for paid `llm_complete` calls; `null` for `free`
+- **`usage`** — token usage object returned by `llm_complete` as `{ inputTokens, outputTokens }`
 
 Examples below show common response shapes. Do not assume the examples are exhaustive; MCP responses can include additional fields from the public contract.
 
@@ -241,6 +249,117 @@ Response (unregistered wallet):
   "social": { "x": null, "website": null }
 }
 ```
+
+---
+
+## LLM Inference
+
+### llm_complete
+
+**Scope:** `llm:invoke`
+
+Generate one non-streaming LLM completion for the authenticated MCP wallet.
+
+Availability:
+
+- the tool is not listed when `LLM_ENABLED=false`
+- clients must request and receive `llm:invoke`; it is not part of the default OAuth scope
+- `free` calls do not require payment
+- paid tiers use x402 with USDC on Solana mainnet when paid settlement is enabled
+- during staged rollout, paid tiers can return `MODEL_UNAVAILABLE` until x402 settlement is active for that tier
+
+Input:
+
+```json
+{
+  "messages": [
+    { "role": "system", "content": "Reply concisely." },
+    { "role": "user", "content": "Summarize this DM thread." }
+  ],
+  "model": "free",
+  "max_tokens": 256,
+  "temperature": 0.7,
+  "payment": "optional-base64-x402-payment-payload"
+}
+```
+
+| Parameter | Type | Description |
+|---|---|---|
+| `messages` | array | Required. 1 to 50 messages with `role` in `system`, `user`, or `assistant` |
+| `model` | string | Optional tier: `free`, `cheap`, `balanced`, or `strong`. Default is `cheap` |
+| `max_tokens` | number | Optional positive integer. Values above the tier limit are clamped |
+| `temperature` | number | Optional number from 0 to 2. Default is 1 |
+| `payment` | string | Optional base64 x402 payment payload for paid retry calls |
+
+Limits:
+
+| Limit | Value |
+|---|---|
+| Max messages | 50 |
+| Max total input content | 32000 characters |
+| Free calls per wallet | 100 per UTC day by default |
+| Rate limit, free | 5 calls per minute per wallet by default |
+| Rate limit, paid | 20 calls per minute per wallet by default |
+| Paid daily spend cap | 5 USDC per wallet by default |
+
+Tiers:
+
+| Tier | Price per call | Max output tokens | Notes |
+|---|---:|---:|---|
+| `free` | 0 USDC | 1024 | Free sidecar model |
+| `cheap` | 0.002 USDC | 1024 | Low-cost paid tier |
+| `balanced` | 0.010 USDC | 2048 | Balanced paid tier |
+| `strong` | 0.050 USDC | 4096 | Strongest paid tier |
+
+The public `model` field is a tier, not a provider model id. Deside may change the provider model behind a tier without changing the MCP contract.
+
+Response:
+
+```json
+{
+  "text": "Here is the completion.",
+  "model": "free",
+  "usage": {
+    "inputTokens": 24,
+    "outputTokens": 37
+  },
+  "cost": 0,
+  "currency": "USDC",
+  "paymentReceipt": null,
+  "requestId": "llm_...",
+  "finishReason": "stop"
+}
+```
+
+For paid calls, `cost` is the tier's fixed USDC price and `paymentReceipt` is the settlement transaction signature after the provider call succeeds and the payment settles.
+
+Negative contract:
+
+```txt
+llm_complete no tiene memoria, no llama tools, no navega, no hace streaming,
+no persiste prompts ni respuestas, no acepta nombres de modelos concretos.
+```
+
+Privacy:
+
+Deside does not persist prompts or responses for `llm_complete`. Prompts are still sent to upstream model providers through Deside-operated infrastructure to generate the completion, and those providers' terms may apply.
+
+Errors:
+
+| Error | Status | Meaning |
+|---|---:|---|
+| `insufficient_scope` | 403 | Token lacks `llm:invoke` |
+| `INPUT_TOO_LARGE` | 400 | Message count or total content exceeds limits |
+| `RATE_LIMITED` | 429 | Wallet exceeded per-minute LLM rate limit |
+| `BUDGET_EXCEEDED` | 402 | Free daily cap or paid daily spend cap would be exceeded |
+| `PAYMENT_REQUIRED` | 402 | Paid tier requires x402 payment; error payload includes payment requirements |
+| `PAYMENT_INVALID` | 402 | Signed payment payload, nonce, amount, network, or receiver is invalid |
+| `PAYMENT_FAILED` | 402 | Settlement failed after provider success |
+| `MODEL_UNAVAILABLE` | 400 | Requested tier cannot currently be served |
+| `PROVIDER_TIMEOUT` | 504 | Upstream model provider timed out |
+| `PROVIDER_ERROR` | 502 | Upstream model provider failed |
+
+See [Payments](payments.md) for the paid quote, sign, retry, and receipt flow.
 
 ---
 

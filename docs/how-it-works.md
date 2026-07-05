@@ -1,5 +1,7 @@
 # How Deside MCP works
 
+> Deprecated mirror. Current page: [`deside-docs/mcp/docs/how-it-works.md`](https://github.com/DesideApp/deside-docs/blob/main/mcp/docs/how-it-works.md).
+
 ## Core protocol
 
 The core protocol is intentionally minimal:
@@ -130,6 +132,6 @@ At the MCP layer, the important distinction is:
 
 If you need the deeper product semantics behind identity resolution, passport-first, or protocol support, see:
 
-- [Identity Resolution And Auth Boundaries](https://github.com/DesideApp/deside-docs/blob/main/agent-identity/identity-resolution-and-auth-boundaries.md)
-- [Passport And Protocol Registries](https://github.com/DesideApp/deside-docs/blob/main/agent-identity/passport-and-protocol-registries.md)
-- [Agent Directory And Profile Surfaces](https://github.com/DesideApp/deside-docs/blob/main/agent-identity/agent-directory-and-profile-surfaces.md)
+- [Identity Resolution And Auth Boundaries](../../agent-identity/identity-resolution-and-auth-boundaries.md)
+- [Passport And Protocol Registries](../../agent-identity/passport-and-protocol-registries.md)
+- [Agent Directory And Profile Surfaces](../../agent-identity/agent-directory-and-profile-surfaces.md)

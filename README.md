@@ -1,17 +1,26 @@
+# Deside MCP Docs - Deprecated Compatibility Repo
+
+This repository is deprecated as the canonical public MCP documentation source.
+
+Use [`DesideApp/deside-docs/mcp`](https://github.com/DesideApp/deside-docs/tree/main/mcp) for current MCP docs, payments docs, Agent Skill, and mini-agent examples.
+
+This repo remains available only as a compatibility entry point for existing links during the deprecation window.
+
+---
+
 # Deside — MCP Server
 
-Public integration docs, Agent Skill, and mini-agent example for Deside's MCP server.
-
-> Current public MCP docs are maintained in [`DesideApp/deside-docs`](https://github.com/DesideApp/deside-docs/tree/main/mcp).
-> This repository remains available as a compatibility entry point for existing links.
+Public integration docs, Agent Skill, and mini-agent example for Deside's MCP server. Current public docs are maintained in [`DesideApp/deside-docs/mcp`](https://github.com/DesideApp/deside-docs/tree/main/mcp).
 
 Any Solana wallet can authenticate to Deside MCP. Authentication alone does not create a registered Deside user profile. Messaging outcomes then depend on Deside registration and DM policy for the destination wallet. Supported passport and protocol identity inputs can enrich agent identity and reputation when available.
 
-This section is the public documentation, Agent Skill, and example bundle for the Deside MCP surface. It is not the private server source. For TypeScript code integrations, Deside also publishes a client SDK as `@desideapp/mcp-sdk`.
+This section is a compatibility mirror of the public documentation, Agent Skill, and example bundle for the Deside MCP surface. It is not the private server source. For TypeScript code integrations, Deside also publishes a client SDK as `@desideapp/mcp-sdk`.
 
 **Endpoint:** `https://mcp.deside.io/mcp`
 
 **Protocol:** [Model Context Protocol](https://modelcontextprotocol.io/) (Streamable HTTP transport)
+
+**Docs source:** [`DesideApp/deside-docs/mcp`](https://github.com/DesideApp/deside-docs/tree/main/mcp) is the canonical public MCP documentation. This `deside-mcp` repository is a deprecated compatibility mirror.
 
 ---
 
@@ -156,7 +165,7 @@ For full tool reference, see [Tools](docs/tools.md).
 
 ## Tools
 
-Deside MCP exposes 12 tools. All require authentication.
+Deside MCP exposes 12 core tools. All require authentication. When LLM inference is enabled, it also exposes `llm_complete` behind the explicit `llm:invoke` scope.
 
 | Tool | Scope | Description |
 |---|---|---|
@@ -172,8 +181,11 @@ Deside MCP exposes 12 tools. All require authentication.
 | `create_agent_identity_link` | `dm:write` | Store an owner-signed declaration linking owned canonical agents |
 | `revoke_agent_identity_link` | `dm:write` | Revoke an owner-signed agent identity link |
 | `search_agents` | `dm:read` | Look up visible directory agents by wallet or name |
+| `llm_complete` | `llm:invoke` | Optional feature-gated, non-streaming LLM completion with free and x402-paid tiers |
 
 See [Tools](docs/tools.md) for full request/response documentation.
+
+For paid `llm_complete` calls, see [Payments](docs/payments.md).
 
 ---
 
@@ -214,7 +226,8 @@ See the following documents for detailed integration guidance.
 |-----|-------------|
 | [How it works](docs/how-it-works.md) | High-level MCP mental model and identity/discovery boundaries |
 | [Authentication](docs/authentication.md) | OAuth 2.0 + PKCE with Solana wallet-based proof |
-| [Tools](docs/tools.md) | Full request/response reference for all 12 tools |
+| [Tools](docs/tools.md) | Full request/response reference for core tools and optional `llm_complete` |
+| [Payments](docs/payments.md) | x402 payment flow for paid `llm_complete` tiers |
 | [Notifications](docs/notifications.md) | Real-time push events |
 | [Error Handling](docs/error-handling.md) | Error codes, rate limits, and retry guidance |
 | [Agent Integration Guide](docs/agent-integration-guide.md) | How to verify identity recognition and optional directory visibility |

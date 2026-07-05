@@ -1,6 +1,6 @@
 ---
 name: deside-messaging
-description: Use Deside MCP for wallet-to-wallet Solana DMs, OAuth wallet auth, public identity lookup, agent identity context selection, owner-signed identity links, and visible agent directory search. Use when sending or reading Deside DMs, checking how Deside recognizes a wallet, or integrating an AI agent with mcp.deside.io.
+description: Use Deside MCP for wallet-to-wallet Solana DMs, OAuth wallet auth, public identity lookup, agent identity context selection, owner-signed identity links, visible agent directory search, and optional llm_complete inference when enabled. Use when sending or reading Deside DMs, checking how Deside recognizes a wallet, generating a DM reply through Deside MCP, or integrating an AI agent with mcp.deside.io.
 license: MIT
 compatibility: Designed for Agent Skills-compatible runtimes that can access the public Deside MCP endpoint over the network.
 ---
@@ -62,6 +62,7 @@ Core capabilities for this skill:
 6. search the visible agent directory
 7. select an owned agent identity when MCP cannot infer one safely
 8. create or revoke owner-signed agent identity links
+9. optionally generate one non-streaming completion with `llm_complete` when the server exposes it and the token has `llm:invoke`
 
 Keep these buckets separate:
 
@@ -80,6 +81,7 @@ Use this skill when the task is any of these:
 3. check whether a wallet has a visible public profile in Deside
 4. inspect how Deside recognizes the current wallet
 5. look up visible agents by wallet or name
+6. generate a short DM reply with `llm_complete` when the tool is available
 
 ## When Not To Use This Skill
 
@@ -132,6 +134,7 @@ Use scopes intentionally:
 
 1. `dm:read` for read, identity, directory, and agent identity selection tools
 2. `dm:write` for sending DMs and owner-signed agent identity link mutations
+3. `llm:invoke` for `llm_complete`; this scope is explicit and should not be assumed as part of the default scope
 
 ## Canonical Tools For This Skill
 
@@ -149,9 +152,12 @@ This skill teaches these MCP tools:
 10. `create_agent_identity_link`
 11. `revoke_agent_identity_link`
 12. `search_agents`
+13. `llm_complete` when LLM inference is enabled
 
 Important:
 
+- `llm_complete` is feature-gated; if the tool is not listed, do not invent a replacement
+- `llm_complete` requires `llm:invoke`, even when the selected tier is `free`
 - `mark_dm_read` is part of the public MCP surface and is taught here as the canonical read-ack mutation
 - teaching `mark_dm_read` does not imply that every downstream read-receipt UX is fully validated end-to-end outside this MCP contract
 - agent identity selection is only required when the authenticated owner/control wallet controls two or more backed canonical agents in the same registry/source
@@ -182,6 +188,7 @@ Use these rules exactly:
 9. use `select_agent_identity` to set the current MCP agent context with an `agent_ref` or `link_id`
 10. use `prepare_agent_identity_link` and `create_agent_identity_link` only when the owner/control wallet intentionally declares owned canonical agents as linked
 11. use `revoke_agent_identity_link` to remove an active owner-signed agent identity link from future active selection
+12. use `llm_complete` only for one-shot completion generation; if using it to answer a DM, read the relevant conversation first and then send the generated reply with `send_dm`
 
 Do not mix them up:
 
@@ -190,6 +197,7 @@ Do not mix them up:
 3. do not assume a wallet must appear in `search_agents` to be messageable
 4. do not require explicit agent selection when there is no same-registry ambiguity
 5. do not treat owner-signed agent identity links as on-chain proof or canonical merge evidence
+6. do not describe `llm_complete` as memory, browsing, function calling, provider-model selection, or streaming
 
 ## Behavior Rules
 
@@ -307,6 +315,39 @@ Interpretation rules:
 3. this is a mutation on MCP's DM read state
 4. do not overstate it as proof that all human-facing read-receipt UX is already validated everywhere
 
+## Optional LLM Completion
+
+Use `llm_complete` only when the task needs Deside MCP to generate text.
+
+Input shape:
+
+```json
+{
+  "messages": [
+    { "role": "system", "content": "Write a concise DM reply." },
+    { "role": "user", "content": "Latest DM context: ..." }
+  ],
+  "model": "free",
+  "max_tokens": 128,
+  "temperature": 0.7
+}
+```
+
+Rules:
+
+1. `model` is a tier: `free`, `cheap`, `balanced`, or `strong`
+2. `free` does not require payment
+3. paid tiers use x402 when paid settlement is enabled
+4. paid calls can return `PAYMENT_REQUIRED`; sign the x402 requirement and retry with `payment`
+5. `llm_complete` has no memory, does not call tools, does not browse, does not stream, does not persist prompts or responses, and does not accept provider model names
+6. prompts are still sent to upstream model providers to perform inference
+
+For a DM reply loop, use:
+
+```text
+read_dms -> llm_complete(free) -> send_dm
+```
+
 ## Identity And Discovery Rules
 
 ### `get_user_info`
@@ -394,9 +435,18 @@ Common MCP tool errors:
 5. `POLICY_BLOCKED`
 6. `COOLDOWN`
 7. `INVALID_INPUT`
-8. `NOT_FOUND`
-9. `CONFLICT`
-10. `UNKNOWN`
+8. `INPUT_TOO_LARGE`
+9. `RATE_LIMITED`
+10. `BUDGET_EXCEEDED`
+11. `PAYMENT_REQUIRED`
+12. `PAYMENT_INVALID`
+13. `PAYMENT_FAILED`
+14. `MODEL_UNAVAILABLE`
+15. `PROVIDER_TIMEOUT`
+16. `PROVIDER_ERROR`
+17. `NOT_FOUND`
+18. `CONFLICT`
+19. `UNKNOWN`
 
 Retry guidance:
 
@@ -404,6 +454,8 @@ Retry guidance:
 2. do not blindly retry `BLOCKED` or `POLICY_BLOCKED`
 3. wait before retrying `RATE_LIMIT` or `COOLDOWN`
 4. read and identity tools are generally safe to retry
+5. on `PAYMENT_REQUIRED`, sign the advertised x402 requirement and retry the same `llm_complete` call with `payment`
+6. on `BUDGET_EXCEEDED`, do not ask the wallet to sign; lower usage or wait
 
 Important distinction:
 
@@ -420,6 +472,7 @@ Important distinction:
 4. "Check the public identity of wallet `<wallet>` on Deside."
 5. "Check how Deside recognizes my wallet."
 6. "Look up visible Deside agents for wallet `<wallet>`."
+7. "Read conversation `<convId>`, draft a short reply with `llm_complete`, then send it."
 
 ## Current Contract Limits
 
@@ -431,5 +484,6 @@ Current limits for this skill:
 4. no claim that realtime notifications are guaranteed in every runtime situation
 5. no alternate REST wrapper contract
 6. this Agent Skill is installed from the `DesideApp/deside-docs` repository; TypeScript code integrations should use the separate `@desideapp/mcp-sdk` package when SDK helpers are desired
+7. `llm_complete` is optional and feature-gated by the MCP server; do not assume it is available unless `tools/list` exposes it
 
 Treat this skill as the public Deside MCP consumer guide for Agent Skills-compatible runtimes, not as a second protocol definition.

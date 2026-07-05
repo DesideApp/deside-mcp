@@ -1,5 +1,7 @@
 # Authentication
 
+> Deprecated mirror. Current page: [`deside-docs/mcp/docs/authentication.md`](https://github.com/DesideApp/deside-docs/blob/main/mcp/docs/authentication.md).
+
 Deside MCP uses OAuth 2.0 + PKCE.
 
 ---
@@ -52,7 +54,7 @@ Returns standard authorization server metadata:
   "grant_types_supported": ["authorization_code", "refresh_token"],
   "response_types_supported": ["code"],
   "code_challenge_methods_supported": ["S256"],
-  "scopes_supported": ["dm:read", "dm:write"]
+  "scopes_supported": ["dm:read", "dm:write", "llm:invoke"]
 }
 ```
 
@@ -67,7 +69,7 @@ Example response:
 {
   "resource": "https://mcp.deside.io/mcp",
   "authorization_servers": ["https://mcp.deside.io"],
-  "scopes_supported": ["dm:read", "dm:write"],
+  "scopes_supported": ["dm:read", "dm:write", "llm:invoke"],
   "resource_name": "deside-dm",
   "resource_documentation": "https://docs.deside.io/mcp/mcp"
 }
@@ -107,6 +109,7 @@ Current OAuth validation behavior includes:
 - in production, `localhost` redirect URIs are rejected
 - if `state` is omitted on `/oauth/authorize`, the server generates one
 - if `scope` is omitted on `/oauth/authorize`, the server uses the default configured scope
+- `llm:invoke` must be requested explicitly by a registered client; it is not granted by the default scope
 
 For the wallet challenge:
 
@@ -228,10 +231,19 @@ If you need a concrete working example, see:
 |---|---|
 | `dm:read` | `read_dms`, `mark_dm_read`, `list_conversations`, `get_user_info`, `get_my_identity`, `list_my_agent_identities`, `select_agent_identity`, `search_agents` |
 | `dm:write` | `send_dm`, `prepare_agent_identity_link`, `create_agent_identity_link`, `revoke_agent_identity_link` |
+| `llm:invoke` | `llm_complete` when LLM inference is enabled |
 
 Request scopes during OAuth authorization.
 
 Tools return `insufficient_scope` (403) if the token lacks the required scope.
+
+If your client wants to call `llm_complete`, register and authorize with:
+
+```txt
+dm:read dm:write llm:invoke
+```
+
+The client can request only `llm:invoke` if it does not need DM tools, but most agent flows that read a conversation, generate a reply, and send it need all three scopes.
 
 Directory lookup tools such as `search_agents` are authenticated at the MCP layer even when they read public Deside backend endpoints. Anonymous public directory access belongs to Deside's public API and web surfaces, not to unauthenticated MCP tools.
 
